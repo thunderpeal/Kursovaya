@@ -59,6 +59,20 @@ void vivod(int **array_1, int **array_2, const char alphabet[10]) {
 	cout << endl << endl << endl; //отступ снизу
 }
 
+
+void rezim(int **array, const char alphabet[10]) {
+	cout << endl;
+	for (int i = 0; i < 12; i++) {
+		cout << "                        "; //отступ от границы слева 
+		simple_vivod(array, alphabet, i);
+		cout << endl;
+	}
+	cout << endl << endl << endl;
+	cout << "     Это режим расстановки ваших кораблей." << endl;
+	cout << "     Введите точку (например, D 4), где хотите поставить 'голову' корабля, " << endl;
+	cout << "     а затем укажите стрелочкой направление тела корабля." << endl << endl;
+}
+
 int ** ras(int **array, const char alphabet[10]) {
 	int ships[4] = { 1, 2, 3, 4 };
 	int ship_count = 0;
@@ -66,16 +80,8 @@ int ** ras(int **array, const char alphabet[10]) {
 		int number = 0;
 		int number_letter;
 		char letter;
-		cout << endl;
-		for (int i = 0; i < 12; i++) {
-			cout << "                        "; //отступ от границы слева 
-			simple_vivod(array, alphabet, i);
-			cout << endl;
-		}
-		cout << endl << endl << endl;
-		cout << "     Это режим расстановки ваших кораблей." << endl;
-		cout << "     Введите точку (например, D 4), где хотите поставить 'голову' корабля, " << endl;
-		cout << "     а затем укажите стрелочкой направление тела корабля." << endl << endl;
+
+		rezim(array, alphabet);
 
 		if (ships[ship_count] == 0) {
 			ship_count += 1;
@@ -104,10 +110,14 @@ int ** ras(int **array, const char alphabet[10]) {
 		}
 
 		cin >> letter >> number;
+		number -= 1;
 		number_letter = letter - 'A';
-		
-		array[number_letter][number] = ship_length;
-		cout << endl << "     Теперь введите направление расположения корабля стрелкой : " ;
+		array[number][number_letter] = ship_length;
+
+		system("cls");
+		rezim(array, alphabet);
+
+		cout << "     Теперь введите направление расположения корабля стрелкой : " ;
 		cout << endl;
 		int KeyStroke;
 		KeyStroke = _getch();
@@ -119,27 +129,23 @@ int ** ras(int **array, const char alphabet[10]) {
 			{
 			case UP_ARROW:
 				for (int i = 1; i < ship_length; i++) {
-					array[number_letter - i][number] = 4;
+					array[number - i][number_letter] = ship_length;
 				}
-				cout << "UP ARROW" << endl;
 				break;
 			case DOWN_ARROW:
 				for (int i = 1; i < ship_length; i++) {
-					array[number_letter+i][number] = 4;
+					array[number + i][number_letter] = ship_length;
 				}
-				cout << "DOWN ARROW" << endl;
 				break;
 			case LEFT_ARROW:
 				for (int i = 1; i < ship_length; i++) {
-					array[number_letter][number - i] = 4;
+					array[number][number_letter - i] = ship_length;
 				}
-				cout << "LEFT_ARROW" << endl;
 				break;
 			case RIGHT_ARROW:
 				for (int i = 1; i < ship_length; i++) {
-					array[number_letter][number + i] = 4;
+					array[number][number_letter+i] = ship_length;
 				}
-				cout << "RIGHT_ARROW" << endl;
 				break;
 			default:
 				cout << "Some other key." << endl;
@@ -148,12 +154,11 @@ int ** ras(int **array, const char alphabet[10]) {
 		else cout << KeyStroke << endl;
 
 	
-		system("pause");
+		//system("pause");
 		system("cls");
 	}
 	return array;
 }
-
 
 int main()
 {
