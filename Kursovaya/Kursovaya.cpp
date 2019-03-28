@@ -1,17 +1,24 @@
 ﻿#include "pch.h"
-#include <iostream>
-#include <conio.h>
 #include "Sea_Battle.h"
-
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
+#include <iostream>
+#include <ctime>
+#include <conio.h>
 #include <Windows.h>
+#include <random>
 
 #define UP_ARROW 72
 #define LEFT_ARROW 75
 #define DOWN_ARROW 80
 #define RIGHT_ARROW 77
 
+
+void setCursorPosition(int x, int y)
+{
+	static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	std::cout.flush();
+	COORD coord = { (SHORT)x, (SHORT)y };
+	SetConsoleCursorPosition(hOut, coord);
+}
 
 int ** set_0(int **array) {
 	for (int i = 0; i < 10; i++) {
@@ -65,7 +72,14 @@ void vivod(int **array_1, int **array_2, const char alphabet[10]) {
 }
 
 
-void rezim(int **array, const char alphabet[10]) {
+int ** arrangement_player(int **array, const char alphabet[10]) {
+	int ships[4] = { 1, 2, 3, 4 };
+	int ship_length = 0;
+	int ship_count = 0;
+	int number = 0;
+	int number_letter = 0;
+	char letter;
+
 	cout << endl;
 	for (int i = 0; i < 12; i++) {
 		cout << "                        "; //отступ от границы слева 
@@ -76,38 +90,40 @@ void rezim(int **array, const char alphabet[10]) {
 	cout << "     Это режим расстановки ваших кораблей." << endl;
 	cout << "     Введите точку (например, D4), где хотите поставить 'голову' корабля, " << endl;
 	cout << "     а затем укажите стрелочкой направление тела корабля." << endl << endl;
-}
 
-int ** ras(int **array, const char alphabet[10]) {
-	int ships[4] = { 1, 2, 3, 4 };
-	int ship_count = 0;
 	while (true) {
-		int number = 0;
-		int number_letter;
-		char letter;
-
-		rezim(array, alphabet);
-
 		if (ships[ship_count] == 0) {
 			ship_count += 1;
 		}
-		int ship_length = 0;
+
 		if (ships[ship_count] > 0) {
 			switch (ship_count) {
 			case 0: 
 				ship_length = 4;
+				setCursorPosition(0, 20);
+				cout << "                                                                ";
+				setCursorPosition(0, 20);
 				cout << "     Сейчас расположите линкор: ";
 				break;
 			case 1:
 				ship_length = 3;
+				setCursorPosition(0, 20);
+				cout << "                                                                ";
+				setCursorPosition(0, 20);
 				cout << "     Сейчас расположите крейсер: ";
 				break;
 			case 2:
 				ship_length = 2;
+				setCursorPosition(0, 20);
+				cout << "                                                                ";
+				setCursorPosition(0, 20);
 				cout << "     Сейчас расположите эсминец: ";
 				break;
 			case 3:
 				ship_length = 1;
+				setCursorPosition(0, 20);
+				cout << "                                                                ";
+				setCursorPosition(0, 20);
 				cout << "     Сейчас расположите катер: ";
 				break;
 			}
@@ -116,15 +132,15 @@ int ** ras(int **array, const char alphabet[10]) {
 
 		cin >> letter >> number;
 		number -= 1;
-		number_letter = letter - 'A';
-		array[number][number_letter] = ship_length;
+		number_letter = letter - 'A'; 
+		array[number][number_letter] = ship_length; //закидываем в массив нашего поля голову корабля
 
-		system("cls");
-		rezim(array, alphabet);
+		setCursorPosition(28 + number_letter*2, 3+number); //*2 учитывает пробелы в выводимом массиве
+		cout << array[number][number_letter];
 
 		if (ship_length != 1) {
+			setCursorPosition(0, 20);
 			cout << "     Теперь введите направление расположения корабля стрелкой : ";
-			cout << endl;
 			int KeyStroke;
 			KeyStroke = _getch();
 
@@ -136,21 +152,29 @@ int ** ras(int **array, const char alphabet[10]) {
 				case UP_ARROW:
 					for (int i = 1; i < ship_length; i++) {
 						array[number - i][number_letter] = ship_length;
+						setCursorPosition(28 + number_letter * 2, 3 + number - i);
+						cout << array[number - i][number_letter];
 					}
 					break;
 				case DOWN_ARROW:
 					for (int i = 1; i < ship_length; i++) {
 						array[number + i][number_letter] = ship_length;
+						setCursorPosition(28 + number_letter * 2, 3 + number + i);
+						cout << array[number + i][number_letter];
 					}
 					break;
 				case LEFT_ARROW:
 					for (int i = 1; i < ship_length; i++) {
 						array[number][number_letter - i] = ship_length;
+						setCursorPosition(28 + number_letter * 2 - 2 * i, 3 + number);
+						cout<< array[number][number_letter - i];
 					}
 					break;
 				case RIGHT_ARROW:
 					for (int i = 1; i < ship_length; i++) {
 						array[number][number_letter + i] = ship_length;
+						setCursorPosition(28 + number_letter * 2 + 2 * i, 3 + number);
+						cout << array[number][number_letter + i];
 					}
 					break;
 				default:
@@ -158,29 +182,66 @@ int ** ras(int **array, const char alphabet[10]) {
 				}
 			}
 			else cout << KeyStroke << endl;
-
 		}
 		
-		//system("pause");
-		system("cls");
 		if (ships[ship_count] == 0 && ship_count == 3) {
-			cout << endl;
-			for (int i = 0; i < 12; i++) {
-				cout << "                        "; //отступ от границы слева 
-				simple_vivod(array, alphabet, i);
-				cout << endl;
-			}
-			cout << endl << endl << endl;
-			cout << endl<< "Расстановка окончена! Приступим к игре." << endl;
-			system("pause");
+			setCursorPosition(0, 20);
+			cout << "     Расстановка окончена! Приступим к игре." << endl;
+			//system("pause");
+			Sleep(4000);
 			break;
 		}
 	}
 	return array;
 }
+int ** arrangement_computer(int **array) {
 
+	default_random_engine generator;
+	uniform_int_distribution<int> distribution(0, 9);
+	int ships[4] = { 1, 2, 3, 4 };
+	int ship_count = 0;
+	int ship_length = 0;
+	int x = 0, y = 0;
+
+	while (true) {
+		if (ships[ship_count] == 0) {
+			ship_count += 1;
+		}
+		if (ships[ship_count] > 0) {
+			switch (ship_count) {
+			case 0:
+				ship_length = 4;
+				break;
+			case 1:
+				ship_length = 3;
+				break;
+			case 3:
+				ship_length = 2;
+				break;
+			case 4:
+				ship_length = 1;
+				break;
+			}
+		}
+	
+		x = distribution(generator);
+		y = distribution(generator);
+
+		if (array[x][y] == 0) {
+			array[x][y] = ship_length;
+
+		}
+		else {
+
+		}
+		
+	}
+	
+
+}
 int main()
 {
+	
 
 	setlocale(LC_ALL, "Russian");
 	const char alphabet[10] = { 'A','B','C','D','E','F','G','H','I','J' };
@@ -189,7 +250,7 @@ int main()
 	self_zones = set_0(self_zones);
 	enemy_zones = set_0(enemy_zones);
 
-	ras(self_zones, alphabet);
-	
-	//vivod(self_zones, enemy_zones, alphabet);
-}
+	arrangement_player(self_zones, alphabet);
+	system("cls");
+	vivod(self_zones, enemy_zones, alphabet);
+}//РАСШИРИТЬ ПОЛЕ ДО 11 НА 11
