@@ -3,10 +3,15 @@
 #include <conio.h>
 #include "Sea_Battle.h"
 
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+
 #define UP_ARROW 72
 #define LEFT_ARROW 75
 #define DOWN_ARROW 80
 #define RIGHT_ARROW 77
+
 
 int ** set_0(int **array) {
 	for (int i = 0; i < 10; i++) {
@@ -69,7 +74,7 @@ void rezim(int **array, const char alphabet[10]) {
 	}
 	cout << endl << endl << endl;
 	cout << "     Это режим расстановки ваших кораблей." << endl;
-	cout << "     Введите точку (например, D 4), где хотите поставить 'голову' корабля, " << endl;
+	cout << "     Введите точку (например, D4), где хотите поставить 'голову' корабля, " << endl;
 	cout << "     а затем укажите стрелочкой направление тела корабля." << endl << endl;
 }
 
@@ -117,51 +122,66 @@ int ** ras(int **array, const char alphabet[10]) {
 		system("cls");
 		rezim(array, alphabet);
 
-		cout << "     Теперь введите направление расположения корабля стрелкой : " ;
-		cout << endl;
-		int KeyStroke;
-		KeyStroke = _getch();
+		if (ship_length != 1) {
+			cout << "     Теперь введите направление расположения корабля стрелкой : ";
+			cout << endl;
+			int KeyStroke;
+			KeyStroke = _getch();
 
-		if (KeyStroke == 224)
-		{
-			KeyStroke = _getch(); // Even though there are 2 getch() it reads one keystroke
-			switch (KeyStroke)
+			if (KeyStroke == 224)
 			{
-			case UP_ARROW:
-				for (int i = 1; i < ship_length; i++) {
-					array[number - i][number_letter] = ship_length;
+				KeyStroke = _getch(); // Even though there are 2 getch() it reads one keystroke
+				switch (KeyStroke)
+				{
+				case UP_ARROW:
+					for (int i = 1; i < ship_length; i++) {
+						array[number - i][number_letter] = ship_length;
+					}
+					break;
+				case DOWN_ARROW:
+					for (int i = 1; i < ship_length; i++) {
+						array[number + i][number_letter] = ship_length;
+					}
+					break;
+				case LEFT_ARROW:
+					for (int i = 1; i < ship_length; i++) {
+						array[number][number_letter - i] = ship_length;
+					}
+					break;
+				case RIGHT_ARROW:
+					for (int i = 1; i < ship_length; i++) {
+						array[number][number_letter + i] = ship_length;
+					}
+					break;
+				default:
+					cout << "Some other key." << endl;
 				}
-				break;
-			case DOWN_ARROW:
-				for (int i = 1; i < ship_length; i++) {
-					array[number + i][number_letter] = ship_length;
-				}
-				break;
-			case LEFT_ARROW:
-				for (int i = 1; i < ship_length; i++) {
-					array[number][number_letter - i] = ship_length;
-				}
-				break;
-			case RIGHT_ARROW:
-				for (int i = 1; i < ship_length; i++) {
-					array[number][number_letter+i] = ship_length;
-				}
-				break;
-			default:
-				cout << "Some other key." << endl;
 			}
-		}
-		else cout << KeyStroke << endl;
+			else cout << KeyStroke << endl;
 
-	
+		}
+		
 		//system("pause");
 		system("cls");
+		if (ships[ship_count] == 0 && ship_count == 3) {
+			cout << endl;
+			for (int i = 0; i < 12; i++) {
+				cout << "                        "; //отступ от границы слева 
+				simple_vivod(array, alphabet, i);
+				cout << endl;
+			}
+			cout << endl << endl << endl;
+			cout << endl<< "Расстановка окончена! Приступим к игре." << endl;
+			system("pause");
+			break;
+		}
 	}
 	return array;
 }
 
 int main()
 {
+
 	setlocale(LC_ALL, "Russian");
 	const char alphabet[10] = { 'A','B','C','D','E','F','G','H','I','J' };
 	int ** self_zones = new int*[10];
@@ -173,4 +193,3 @@ int main()
 	
 	//vivod(self_zones, enemy_zones, alphabet);
 }
-//ДЕЛАЕМ РАССТАНОВКУУУ
