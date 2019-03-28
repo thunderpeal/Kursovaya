@@ -31,7 +31,7 @@ void simple_vivod (int **array, const char alphabet[10], int i) {
 				cout << array[i-2][j-2] << " ";
 				break;
 			case -1:
-				cout << "o ";
+				cout << "o "; 
 				break;
 			case (-2):
 				cout << "x ";
@@ -53,18 +53,47 @@ void vivod(int **array_1, int **array_2, const char alphabet[10]) {
 	cout << endl << endl << endl; //отступ снизу
 }
 
-//int ** ras(int **array) {
+int ** ras(int **array, const char alphabet[10]) {
+	while (true) {
+		int number = 0;
+		int number_letter;
+		char letter;
+		cout << endl;
+		for (int i = 0; i < 12; i++) {
+			cout << "                        "; //отступ от границы слева 
+			simple_vivod(array, alphabet, i);
+			cout << endl;
+		}
+		cout << endl << endl << endl;
+		cout << "     Это режим расстановки ваших кораблей." << endl;
+		cout << "     Введите точку (например, D 4), где хотите поставить 'голову' корабля, " << endl;
+		cout << "     а затем укажите стрелочкой направление тела корабля." << endl << endl;
 
-//}
+		cout << "     Сейчас расположите линкор: ";
+
+		cin >> letter >> number;
+		number_letter = letter - 'A';
+		
+		array[number_letter][number] = 4;
+
+		system("pause");
+		system("cls");
+	}
+	return array;
+}
 
 
 int main()
 {
+	setlocale(LC_ALL, "Russian");
 	const char alphabet[10] = { 'A','B','C','D','E','F','G','H','I','J' };
 	int ** self_zones = new int*[10];
 	int ** enemy_zones = new int*[10];
 	self_zones = set_0(self_zones);
 	enemy_zones = set_0(enemy_zones);
-	vivod(self_zones, enemy_zones, alphabet);
+
+	ras(self_zones, alphabet);
+	
+	//vivod(self_zones, enemy_zones, alphabet);
 }
 //ДЕЛАЕМ РАССТАНОВКУУУ
