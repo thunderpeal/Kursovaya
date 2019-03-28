@@ -1,6 +1,12 @@
 ﻿#include "pch.h"
 #include <iostream>
+#include <conio.h>
 #include "Sea_Battle.h"
+
+#define UP_ARROW 72
+#define LEFT_ARROW 75
+#define DOWN_ARROW 80
+#define RIGHT_ARROW 77
 
 int ** set_0(int **array) {
 	for (int i = 0; i < 10; i++) {
@@ -54,6 +60,8 @@ void vivod(int **array_1, int **array_2, const char alphabet[10]) {
 }
 
 int ** ras(int **array, const char alphabet[10]) {
+	int ships[4] = { 1, 2, 3, 4 };
+	int ship_count = 0;
 	while (true) {
 		int number = 0;
 		int number_letter;
@@ -69,13 +77,77 @@ int ** ras(int **array, const char alphabet[10]) {
 		cout << "     Введите точку (например, D 4), где хотите поставить 'голову' корабля, " << endl;
 		cout << "     а затем укажите стрелочкой направление тела корабля." << endl << endl;
 
-		cout << "     Сейчас расположите линкор: ";
+		if (ships[ship_count] == 0) {
+			ship_count += 1;
+		}
+		int ship_length = 0;
+		if (ships[ship_count] > 0) {
+			switch (ship_count) {
+			case 0: 
+				ship_length = 4;
+				cout << "     Сейчас расположите линкор: ";
+				break;
+			case 1:
+				ship_length = 3;
+				cout << "     Сейчас расположите крейсер: ";
+				break;
+			case 2:
+				ship_length = 2;
+				cout << "     Сейчас расположите эсминец: ";
+				break;
+			case 3:
+				ship_length = 1;
+				cout << "     Сейчас расположите катер: ";
+				break;
+			}
+			ships[ship_count] -= 1;	
+		}
 
 		cin >> letter >> number;
 		number_letter = letter - 'A';
 		
-		array[number_letter][number] = 4;
+		array[number_letter][number] = ship_length;
+		cout << endl << "     Теперь введите направление расположения корабля стрелкой : " ;
+		cout << endl;
+		int KeyStroke;
+		KeyStroke = _getch();
 
+		if (KeyStroke == 224)
+		{
+			KeyStroke = _getch(); // Even though there are 2 getch() it reads one keystroke
+			switch (KeyStroke)
+			{
+			case UP_ARROW:
+				for (int i = 1; i < ship_length; i++) {
+					array[number_letter - i][number] = 4;
+				}
+				cout << "UP ARROW" << endl;
+				break;
+			case DOWN_ARROW:
+				for (int i = 1; i < ship_length; i++) {
+					array[number_letter+i][number] = 4;
+				}
+				cout << "DOWN ARROW" << endl;
+				break;
+			case LEFT_ARROW:
+				for (int i = 1; i < ship_length; i++) {
+					array[number_letter][number - i] = 4;
+				}
+				cout << "LEFT_ARROW" << endl;
+				break;
+			case RIGHT_ARROW:
+				for (int i = 1; i < ship_length; i++) {
+					array[number_letter][number + i] = 4;
+				}
+				cout << "RIGHT_ARROW" << endl;
+				break;
+			default:
+				cout << "Some other key." << endl;
+			}
+		}
+		else cout << KeyStroke << endl;
+
+	
 		system("pause");
 		system("cls");
 	}
