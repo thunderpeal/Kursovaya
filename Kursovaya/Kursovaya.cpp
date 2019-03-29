@@ -194,10 +194,18 @@ int ** arrangement_player(int **array, const char alphabet[10]) {
 	}
 	return array;
 }
-int ** arrangement_computer(int **array) {
+int ** arrangement_computer(int **array, const char alphabet[10]) {
+
+	cout << endl;
+	for (int i = 0; i < 12; i++) {
+		cout << "                        "; //отступ от границы слева 
+		simple_vivod(array, alphabet, i);
+		cout << endl;
+	}
+	cout << endl << endl << endl;
 
 	default_random_engine generator;
-	uniform_int_distribution<int> distribution(0, 9);
+	uniform_int_distribution<int> distribution(4, 9);
 	int ships[4] = { 1, 2, 3, 4 };
 	int ship_count = 0;
 	int ship_length = 0;
@@ -206,51 +214,110 @@ int ** arrangement_computer(int **array) {
 	while (true) {
 		if (ships[ship_count] == 0) {
 			ship_count += 1;
+			setCursorPosition(0, 30);
+			cout << ship_count<< " " << ships[0] << ships[1] << ships[2] << ships[3] <<endl;
+
 		}
-		if (ships[ship_count] > 0) {
-			switch (ship_count) {
-			case 0:
-				ship_length = 4;
-				break;
-			case 1:
-				ship_length = 3;
-				break;
-			case 3:
-				ship_length = 2;
-				break;
-			case 4:
-				ship_length = 1;
+		switch (ship_count) {
+		case 0:
+			ship_length = 4;
+			break;
+		case 1:
+			ship_length = 3;
+			break;
+		case 2:
+			ship_length = 2;
+			break;
+		case 3:
+			ship_length = 1;
+			break;
+		}
+		while (true) {
+			x = rand() % 10;
+			y = rand() % 10;
+			bool array_bo[4] = { true, true, true, true }; //ВЕРХ НИЗ ЛЕВО ПРАВО
+			if (array[y][x] == 0) {
+				for (int i = 1; i < ship_length; i++) {//в какую сторону нельзя повернуть корабль
+					if (y - i <= 0) { array_bo[0] = false; } //вверх нельзя
+					else if (y + i >= 10) { array_bo[1] = false; } //вниз нельзя
+
+					if (x - i <= 0) { array_bo[2] = false; } //влево нельзя
+					else if (x + i >= 10) { array_bo[3] = false; }
+				}
+
+				if (array_bo[0] == false && array_bo[1] == false && array_bo[2] == false && array_bo[3] == false) { continue; }
+
+
+				int enter = -1;
+
+				while (true) {
+					enter = rand() % 4;
+					bool a = array_bo[enter];
+					if (a == true) { break; }
+				}
+				setCursorPosition(0, 25);
+				cout << ship_length;
+				switch (enter) {
+				case 0:
+					for (int i = 0; i < ship_length; i++) {
+						array[y - i][x] = ship_length;
+						setCursorPosition(28 + x * 2, 3 + y - i);
+						cout << array[y - i][x];
+					}
+					break;
+				case 1:
+					for (int i = 0; i < ship_length; i++) {
+						array[y + i][x] = ship_length;
+						setCursorPosition(28 + x * 2, 3 + y + i);
+						cout << array[y + i][x];
+					}
+					break;
+				case 2:
+					for (int i = 0; i < ship_length; i++) {
+						array[y][x - i] = ship_length;
+						setCursorPosition(28 + x * 2 - 2 * i, 3 + y);
+						cout << array[y][x - i];
+					}
+					break;
+				case 3:
+					for (int i = 0; i < ship_length; i++) {
+						array[y][x + i] = ship_length;
+						setCursorPosition(28 + x * 2 + 2 * i, 3 + y);
+						cout << array[y][x + i];
+					}
+					break;
+				default:
+					cout << "Some other key." << endl;
+				}
+
+				ships[ship_count] -= 1;
 				break;
 			}
+			else { continue; }
 		}
-	
-		x = distribution(generator);
-		y = distribution(generator);
-
-		if (array[x][y] == 0) {
-			array[x][y] = ship_length;
-
+		if (ships[ship_count] == 0 && ship_count == 3) {
+			setCursorPosition(0, 26);
+			setCursorPosition(0, 31);
+			cout << ship_count << " " << ships[0] << ships[1] << ships[2] << ships[3] << endl;
+			system("pause");
 		}
-		else {
 
-		}
-		
 	}
 	
 
 }
 int main()
 {
+	srand(time(NULL));
 	
-
 	setlocale(LC_ALL, "Russian");
 	const char alphabet[10] = { 'A','B','C','D','E','F','G','H','I','J' };
 	int ** self_zones = new int*[10];
 	int ** enemy_zones = new int*[10];
 	self_zones = set_0(self_zones);
 	enemy_zones = set_0(enemy_zones);
-
+	arrangement_computer(enemy_zones, alphabet);
 	arrangement_player(self_zones, alphabet);
 	system("cls");
 	vivod(self_zones, enemy_zones, alphabet);
-}//РАСШИРИТЬ ПОЛЕ ДО 11 НА 11
+}
