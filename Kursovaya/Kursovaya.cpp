@@ -290,8 +290,6 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 		}
 		if (ships[ship_count] == 0 && ship_count == 3) {
 			setCursorPosition(0, 26);
-			setCursorPosition(0, 31);
-			cout << ship_count << " " << ships[0] << ships[1] << ships[2] << ships[3] << endl;
 			system("pause");
 		}
 
