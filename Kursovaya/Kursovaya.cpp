@@ -96,39 +96,37 @@ int ** arrangement_player(int **array, const char alphabet[10]) {
 			ship_count += 1;
 		}
 
-		if (ships[ship_count] > 0) {
-			switch (ship_count) {
-			case 0: 
-				ship_length = 4;
-				setCursorPosition(0, 20);
-				cout << "                                                                ";
-				setCursorPosition(0, 20);
-				cout << "     Сейчас расположите линкор: ";
-				break;
-			case 1:
-				ship_length = 3;
-				setCursorPosition(0, 20);
-				cout << "                                                                ";
-				setCursorPosition(0, 20);
-				cout << "     Сейчас расположите крейсер: ";
-				break;
-			case 2:
-				ship_length = 2;
-				setCursorPosition(0, 20);
-				cout << "                                                                ";
-				setCursorPosition(0, 20);
-				cout << "     Сейчас расположите эсминец: ";
-				break;
-			case 3:
-				ship_length = 1;
-				setCursorPosition(0, 20);
-				cout << "                                                                ";
-				setCursorPosition(0, 20);
-				cout << "     Сейчас расположите катер: ";
-				break;
-			}
-			ships[ship_count] -= 1;	
+		switch (ship_count) {
+		case 0:
+			ship_length = 4;
+			setCursorPosition(0, 20);
+			cout << "                                                                ";
+			setCursorPosition(0, 20);
+			cout << "     Сейчас расположите линкор: ";
+			break;
+		case 1:
+			ship_length = 3;
+			setCursorPosition(0, 20);
+			cout << "                                                                ";
+			setCursorPosition(0, 20);
+			cout << "     Сейчас расположите крейсер: ";
+			break;
+		case 2:
+			ship_length = 2;
+			setCursorPosition(0, 20);
+			cout << "                                                                ";
+			setCursorPosition(0, 20);
+			cout << "     Сейчас расположите эсминец: ";
+			break;
+		case 3:
+			ship_length = 1;
+			setCursorPosition(0, 20);
+			cout << "                                                                ";
+			setCursorPosition(0, 20);
+			cout << "     Сейчас расположите катер: ";
+			break;
 		}
+		ships[ship_count] -= 1;
 
 		cin >> letter >> number;
 		number -= 1;
@@ -214,9 +212,6 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 	while (true) {
 		if (ships[ship_count] == 0) {
 			ship_count += 1;
-			setCursorPosition(0, 30);
-			cout << ship_count<< " " << ships[0] << ships[1] << ships[2] << ships[3] <<endl;
-
 		}
 		switch (ship_count) {
 		case 0:
@@ -232,6 +227,7 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 			ship_length = 1;
 			break;
 		}
+
 		while (true) {
 			x = rand() % 10;
 			y = rand() % 10;
@@ -247,7 +243,7 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 
 				if (array_bo[0] == false && array_bo[1] == false && array_bo[2] == false && array_bo[3] == false) { continue; }
 
-
+				ships[ship_count] -= 1;
 				int enter = -1;
 
 				while (true) {
@@ -255,8 +251,7 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 					bool a = array_bo[enter];
 					if (a == true) { break; }
 				}
-				setCursorPosition(0, 25);
-				cout << ship_length;
+				
 				switch (enter) {
 				case 0:
 					for (int i = 0; i < ship_length; i++) {
@@ -289,8 +284,6 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 				default:
 					cout << "Some other key." << endl;
 				}
-
-				ships[ship_count] -= 1;
 				break;
 			}
 			else { continue; }
