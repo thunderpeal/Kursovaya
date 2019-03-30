@@ -358,6 +358,8 @@ int main()
 	vivod(self_zones, enemy_zones, alphabet);
 
 	int counter = 0;
+	int player_ships[4] = { 1,2,3,4 };
+	int computer_ships[4] = { 1,2,3,4 };
 	int number = 0;
 	int number_letter = 0;
 	char letter;
@@ -377,13 +379,15 @@ int main()
 				|| enemy_zones[number - 1][number_letter] == 3 || enemy_zones[number - 1][number_letter] == 4) {
 				setCursorPosition(47 + number_letter*2, 2 + number);
 				cout << "x ";
+				sequence = 1;
 			}
 			else {
 				setCursorPosition(47 + number_letter*2, 2 + number);
 				cout << "o ";
+				sequence = 0;
 			}
 
-			sequence = 0;
+			
 		}
 		else {
 			setCursorPosition(0, 19);
@@ -392,8 +396,4 @@ int main()
 		}
 		
 	}
-	
-	
-	
-	
 }
