@@ -70,7 +70,6 @@ void vivod(int **array_1, int **array_2, const char alphabet[10]) {
 	cout << endl << endl << endl; //отступ снизу
 }
 
-
 int ** arrangement_player(int **array, const char alphabet[10]) {
 	int ships[4] = { 1, 2, 3, 4 };
 	int ship_length = 0;
@@ -183,7 +182,8 @@ int ** arrangement_player(int **array, const char alphabet[10]) {
 		
 		if (ships[ship_count] == 0 && ship_count == 3) {
 			setCursorPosition(0, 20);
-			cout << "     Расстановка окончена! Приступим к игре." << endl;
+			cout << "     Расстановка окончена! Компьютер так же расставил свои корабли."<<endl
+				<<"                    Приступим к игре." << endl;
 			//system("pause");
 			Sleep(4000);
 			break;
@@ -191,6 +191,7 @@ int ** arrangement_player(int **array, const char alphabet[10]) {
 	}
 	return array;
 }
+
 int ** arrangement_computer(int **array, const char alphabet[10]) {
 	int ships[4] = { 1, 2, 3, 4 };
 	int ship_count = 0;
@@ -235,8 +236,6 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 			}
 
 			if (can_be_placed == true) {
-				setCursorPosition(0, 26);
-				cout << y << x;
 				for (int i = 1; i < ship_length; i++) {//в какую сторону нельзя повернуть корабль
 					if (y - i <= 0) { array_bo[0] = false; }//вверх нельзя
 					else {
@@ -315,9 +314,7 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 			else { continue; }
 		}
 		if (ships[ship_count] == 0 && ship_count == 3) {
-			
-			setCursorPosition(0, 26);
-			system("pause");
+			break;
 		}
 	}
 }
@@ -332,8 +329,54 @@ int main()
 	int ** enemy_zones = new int*[10];
 	self_zones = set_0(self_zones);
 	enemy_zones = set_0(enemy_zones);
+
 	arrangement_computer(enemy_zones, alphabet);
-	arrangement_player(self_zones, alphabet);
+	setCursorPosition(0, 2);
+	cout << "      Расставить корабли самостоятельно"<<endl<<"      или использовать автоматическую расстановку? (1/0)";
+	
+	int answer;
+	cin >> answer;
+	system("cls");
+	if (answer == 1) {
+		arrangement_player(self_zones, alphabet);
+	}
+	else {
+		arrangement_computer(self_zones, alphabet);
+		setCursorPosition(0, 2);
+		cout << "     Расстановка окончена! Компьютер так же расставил свои корабли." << endl
+			<< "                    Приступим к игре." << endl;
+		Sleep(2000);
+	}
+
 	system("cls");
 	vivod(self_zones, enemy_zones, alphabet);
+
+	int counter = 0;
+	int number = 0;
+	int number_letter = 0;
+	char letter;
+	int sequence = rand() % 2;
+
+	setCursorPosition(0,18);
+	cout << "  Вы находитесь в режиме боя. Право первого хода определяется жребием." << endl;
+	while (true) {
+		if (sequence == 1) {
+			setCursorPosition(0, 19);
+			cout << "  Ваш ход. Введите координаты предполагаемого корабля противника: ";
+			cin >> letter >> number;
+			number_letter = letter - 'A';
+
+			sequence = 0;
+		}
+		else {
+			setCursorPosition(0, 19);
+			cout << "  Ход противника. Дождитесь завершения.                 ";
+			sequence = 1;
+		}
+		
+	}
+	
+	
+	
+	
 }
