@@ -192,16 +192,6 @@ int ** arrangement_player(int **array, const char alphabet[10]) {
 	return array;
 }
 int ** arrangement_computer(int **array, const char alphabet[10]) {
-
-	cout << endl;
-	for (int i = 0; i < 12; i++) {
-		cout << "                        "; //отступ от границы слева 
-		simple_vivod(array, alphabet, i);
-		cout << endl;
-	}
-	cout << endl << endl << endl;
-
-
 	int ships[4] = { 1, 2, 3, 4 };
 	int ship_count = 0;
 	int ship_length = 0;
@@ -275,12 +265,11 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 					}
 					
 					if (x + i >= 10) {
-						array_bo[3] = false; 
+						array_bo[3] = false; //вправо нельзя
 					}
 					else {
 						for (int j = -1; j < 2; j++) {
 							if (y + j >= 10 || y + j < 0 || x + i + 1 >= 10) { continue; }
-	
 							else if (array[y + j][x + i + 1] != 0) { array_bo[3] = false; }
 						}
 					}
@@ -290,8 +279,7 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 
 				ships[ship_count] -= 1;
 				int enter = -1;
-
-				while (true) {
+				while (true) { //рандомно выбираем направление из доступных
 					enter = rand() % 4;
 					bool a = array_bo[enter];
 					if (a == true) { break; }
@@ -301,29 +289,21 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 				case 0:
 					for (int i = 0; i < ship_length; i++) {
 						array[y - i][x] = ship_length;
-						setCursorPosition(28 + x * 2, 3 + y - i);
-						cout << array[y - i][x];
 					}
 					break;
 				case 1:
 					for (int i = 0; i < ship_length; i++) {
 						array[y + i][x] = ship_length;
-						setCursorPosition(28 + x * 2, 3 + y + i);
-						cout << array[y + i][x];
 					}
 					break;
 				case 2:
 					for (int i = 0; i < ship_length; i++) {
 						array[y][x - i] = ship_length;
-						setCursorPosition(28 + x * 2 - 2 * i, 3 + y);
-						cout << array[y][x - i];
 					}
 					break;
 				case 3:
 					for (int i = 0; i < ship_length; i++) {
 						array[y][x + i] = ship_length;
-						setCursorPosition(28 + x * 2 + 2 * i, 3 + y);
-						cout << array[y][x + i];
 					}
 					break;
 				default:
@@ -339,11 +319,9 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 			setCursorPosition(0, 26);
 			system("pause");
 		}
-
 	}
-	
-
 }
+
 int main()
 {
 	srand(time(NULL));
