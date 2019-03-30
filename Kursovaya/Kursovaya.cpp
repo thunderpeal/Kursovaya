@@ -235,31 +235,51 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 
 			for (int i = -1; i < 1; i++) {
 				for (int j = -1; j < 1; j++) {
-					if (x + i > 10 || x + i < 0 || y + i > 10 || y + i < 0) {
-						continue;
+					if (x + i > 10 || x + i < 0 || y + i > 10 || y + i < 0) { //проверяет все клетки вокруг случайно 
+						continue;											//выбранной на выход за границы поля
 					}
-					else if (array[y + i][x + j] !=0 ) {
+					else if (array[y + i][x + j] !=0 ) { //проверят их же на наличие других объектов
 						can_be_placed = false;
 					}
 				}
 			}
 
 			if (can_be_placed == true) {
-
 				for (int i = 1; i < ship_length; i++) {//в какую сторону нельзя повернуть корабль
-					if (y - i <= 0) { 
-						
-						array_bo[0] = false; 
-					} //вверх нельзя
-					else if (y + i >= 10) { 
-						array_bo[1] = false;
-					} //вниз нельзя
-
+					if (y - i <= 0) { array_bo[0] = false; }//вверх нельзя
+					else {
+						for (int j = -1; j < 1; j++) {
+							if (x + j > 10 || x + j < 0) { continue; }
+							else if (array[y-i][x + j] != 0) { array_bo[0] = false; }
+						}
+					}
+					if (y + i >= 10) { 
+						array_bo[1] = false; //вниз нельзя
+					} 
+					else {
+						for (int j = -1; j < 1; j++) {
+							if (x + j > 10 || x + j < 0) { continue; }
+							else if (array[y+i][x + j] != 0) { array_bo[1] = false; }
+						}
+					}
 					if (x - i <= 0) { 
 						array_bo[2] = false;
 					} //влево нельзя
-					else if (x + i >= 10) {
+					else {
+						for (int j = -1; j < 1; j++) {
+							if (y + j > 10 || y + j < 0) { continue; }
+							else if (array[y+j][x - i] != 0) { array_bo[2] = false; }
+						}
+					}
+					
+					if (x + i >= 10) {
 						array_bo[3] = false; 
+					}
+					else {
+						for (int j = -1; j < 1; j++) {
+							if (y + j > 10 || y + j < 0) { continue; }
+							else if (array[y + j][x + i] != 0) { array_bo[3] = false; }
+						}
 					}
 				}
 
