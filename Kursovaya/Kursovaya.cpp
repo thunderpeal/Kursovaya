@@ -27,7 +27,7 @@ int ** set_0(int **array) {
 	return array;
 }
 
-void simple_vivod (int **array, const char alphabet[10], int i) {
+void simple_vivod (int **array, const char alphabet[10], int i, bool costil) {
 	for (int j = 0; j < 12; j++) {
 		if (i == 0 && j >= 2) { cout << alphabet[j - 2] << " ";  }
 		else if (i == 1) { break; }
@@ -37,23 +37,29 @@ void simple_vivod (int **array, const char alphabet[10], int i) {
 			else { cout << i - 1; }	
 		}
 		else {
-			switch (array[i-2][j-2]) {
-			case 0:
-				cout << ". ";
-				break;
-			case 1:
-			case 2:
-			case 3:
-			case 4:
-				cout << array[i-2][j-2] << " ";
-				break;
-			case -1:
-				cout << "o "; 
-				break;
-			case (-2):
-				cout << "x ";
-				break;
+			if (costil == false) {
+				switch (array[i - 2][j - 2]) {
+				case 0:
+					cout << ". ";
+					break;
+				case 1:
+				case 2:
+				case 3:
+				case 4:
+					cout << array[i - 2][j - 2] << " ";
+					break;
+				case -1:
+					cout << "o ";
+					break;
+				case (-2):
+					cout << "x ";
+					break;
+				}
 			}
+			else {
+				cout << ". ";
+			}
+			
 		}
 	}
 }
@@ -62,9 +68,9 @@ void vivod(int **array_1, int **array_2, const char alphabet[10]) {
 	cout << endl; //отступ от границы сверху
 	for (int i = 0; i < 12; i++) {
 		cout << "        "; //отступ от границы слева 
-		simple_vivod(array_1, alphabet, i);
+		simple_vivod(array_1, alphabet, i, false);
 		cout << "           ";
-		simple_vivod(array_2, alphabet, i);
+		simple_vivod(array_2, alphabet, i, false);
 		cout << endl;
 	}
 	cout << endl << endl << endl; //отступ снизу
@@ -81,7 +87,7 @@ int ** arrangement_player(int **array, const char alphabet[10]) {
 	cout << endl;
 	for (int i = 0; i < 12; i++) {
 		cout << "                        "; //отступ от границы слева 
-		simple_vivod(array, alphabet, i);
+		simple_vivod(array, alphabet, i, false);
 		cout << endl;
 	}
 	cout << endl << endl << endl;
@@ -357,14 +363,25 @@ int main()
 	char letter;
 	int sequence = rand() % 2;
 
-	setCursorPosition(0,18);
+	setCursorPosition(0,16);
 	cout << "  Вы находитесь в режиме боя. Право первого хода определяется жребием." << endl;
+	cout << "  Ваши корабли располагаются на поле слева. Удачи!";
 	while (true) {
 		if (sequence == 1) {
 			setCursorPosition(0, 19);
 			cout << "  Ваш ход. Введите координаты предполагаемого корабля противника: ";
 			cin >> letter >> number;
 			number_letter = letter - 'A';
+
+			if (enemy_zones[number - 1][number_letter] == 1 || enemy_zones[number - 1][number_letter] == 2
+				|| enemy_zones[number - 1][number_letter] == 3 || enemy_zones[number - 1][number_letter] == 4) {
+				setCursorPosition(47 + number_letter*2, 2 + number);
+				cout << "x ";
+			}
+			else {
+				setCursorPosition(47 + number_letter*2, 2 + number);
+				cout << "o ";
+			}
 
 			sequence = 0;
 		}
