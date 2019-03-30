@@ -233,9 +233,9 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 
 			bool can_be_placed = true;
 
-			for (int i = -1; i < 1; i++) {
-				for (int j = -1; j < 1; j++) {
-					if (x + i > 10 || x + i < 0 || y + i > 10 || y + i < 0) { //проверяет все клетки вокруг случайно 
+			for (int i = -1; i < 2; i++) {
+				for (int j = -1; j < 2; j++) {
+					if (x + j >= 10 || x + j < 0 || y + i >= 10 || y + i < 0) { //проверяет все клетки вокруг случайно 
 						continue;											//выбранной на выход за границы поля
 					}
 					else if (array[y + i][x + j] !=0 ) { //проверят их же на наличие других объектов
@@ -245,30 +245,32 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 			}
 
 			if (can_be_placed == true) {
+				setCursorPosition(0, 26);
+				cout << y << x;
 				for (int i = 1; i < ship_length; i++) {//в какую сторону нельзя повернуть корабль
 					if (y - i <= 0) { array_bo[0] = false; }//вверх нельзя
 					else {
-						for (int j = -1; j < 1; j++) {
-							if (x + j > 10 || x + j < 0) { continue; }
-							else if (array[y-i][x + j] != 0) { array_bo[0] = false; }
+						for (int j = -1; j < 2; j++) {
+							if (x + j >= 10 || x + j < 0 || y - i - 1 < 0) { continue; }
+							else if (array[y-i-1][x + j] != 0) { array_bo[0] = false; }
 						}
 					}
 					if (y + i >= 10) { 
 						array_bo[1] = false; //вниз нельзя
 					} 
 					else {
-						for (int j = -1; j < 1; j++) {
-							if (x + j > 10 || x + j < 0) { continue; }
-							else if (array[y+i][x + j] != 0) { array_bo[1] = false; }
+						for (int j = -1; j < 2; j++) {
+							if (x + j >= 10 || x + j < 0 || y + i + 1 >=10) { continue; }
+							else if (array[y+i+1][x + j] != 0) { array_bo[1] = false; }
 						}
 					}
 					if (x - i <= 0) { 
 						array_bo[2] = false;
 					} //влево нельзя
 					else {
-						for (int j = -1; j < 1; j++) {
-							if (y + j > 10 || y + j < 0) { continue; }
-							else if (array[y+j][x - i] != 0) { array_bo[2] = false; }
+						for (int j = -1; j < 2; j++) {
+							if (y + j >= 10 || y + j < 0 || x - i - 1 < 0) { continue; }
+							else if (array[y+j][x - i -1] != 0) { array_bo[2] = false; }
 						}
 					}
 					
@@ -276,9 +278,10 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 						array_bo[3] = false; 
 					}
 					else {
-						for (int j = -1; j < 1; j++) {
-							if (y + j > 10 || y + j < 0) { continue; }
-							else if (array[y + j][x + i] != 0) { array_bo[3] = false; }
+						for (int j = -1; j < 2; j++) {
+							if (y + j >= 10 || y + j < 0 || x + i + 1 >= 10) { continue; }
+	
+							else if (array[y + j][x + i + 1] != 0) { array_bo[3] = false; }
 						}
 					}
 				}
@@ -326,11 +329,13 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 				default:
 					cout << "Some other key." << endl;
 				}
+				
 				break;
 			}
 			else { continue; }
 		}
 		if (ships[ship_count] == 0 && ship_count == 3) {
+			
 			setCursorPosition(0, 26);
 			system("pause");
 		}
