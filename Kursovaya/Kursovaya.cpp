@@ -4,7 +4,6 @@
 #include <ctime>
 #include <conio.h>
 #include <Windows.h>
-#include <random>
 
 #define UP_ARROW 72
 #define LEFT_ARROW 75
@@ -202,8 +201,7 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 	}
 	cout << endl << endl << endl;
 
-	default_random_engine generator;
-	uniform_int_distribution<int> distribution(4, 9);
+
 	int ships[4] = { 1, 2, 3, 4 };
 	int ship_count = 0;
 	int ship_length = 0;
@@ -232,13 +230,37 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 			x = rand() % 10;
 			y = rand() % 10;
 			bool array_bo[4] = { true, true, true, true }; //ВЕРХ НИЗ ЛЕВО ПРАВО
-			if (array[y][x] == 0) {
-				for (int i = 1; i < ship_length; i++) {//в какую сторону нельзя повернуть корабль
-					if (y - i <= 0) { array_bo[0] = false; } //вверх нельзя
-					else if (y + i >= 10) { array_bo[1] = false; } //вниз нельзя
 
-					if (x - i <= 0) { array_bo[2] = false; } //влево нельзя
-					else if (x + i >= 10) { array_bo[3] = false; }
+			bool can_be_placed = true;
+
+			for (int i = -1; i < 1; i++) {
+				for (int j = -1; j < 1; j++) {
+					if (x + i > 10 || x + i < 0 || y + i > 10 || y + i < 0) {
+						continue;
+					}
+					else if (array[y + i][x + j] !=0 ) {
+						can_be_placed = false;
+					}
+				}
+			}
+
+			if (can_be_placed == true) {
+
+				for (int i = 1; i < ship_length; i++) {//в какую сторону нельзя повернуть корабль
+					if (y - i <= 0) { 
+						
+						array_bo[0] = false; 
+					} //вверх нельзя
+					else if (y + i >= 10) { 
+						array_bo[1] = false;
+					} //вниз нельзя
+
+					if (x - i <= 0) { 
+						array_bo[2] = false;
+					} //влево нельзя
+					else if (x + i >= 10) {
+						array_bo[3] = false; 
+					}
 				}
 
 				if (array_bo[0] == false && array_bo[1] == false && array_bo[2] == false && array_bo[3] == false) { continue; }
