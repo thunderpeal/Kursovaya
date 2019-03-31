@@ -345,7 +345,7 @@ int main()
 		setCursorPosition(0, 2);
 		cout << "     Расстановка окончена! Компьютер так же расставил свои корабли." << endl
 			<< "                    Приступим к игре." << endl;
-		Sleep(2000);
+		Sleep(3000);
 	}
 
 	system("cls");
@@ -362,6 +362,8 @@ int main()
 	bool player_won = false;
 	bool computer_won = false;
 
+	bool is_prev_success = false;
+	bool is_prev_success_comp = false;
 
 	setCursorPosition(0,16);
 	cout << "  Вы находитесь в режиме боя. Право первого хода определяется жребием." << endl;
@@ -382,12 +384,21 @@ int main()
 	cout << "Ходов " << count_of_moves;
 	while (true) {
 		setCursorPosition(6, 0);
-		cout  << count_of_moves << "  ";
+		cout  << count_of_moves << "   ";
 		if (sequence == 1) {
-			setCursorPosition(0, 16);
-			cout << "                                                                              ";
-			setCursorPosition(0, 16);
-			cout << "  Ваш ход. Введите координаты предполагаемого корабля противника: ";
+
+			if (is_prev_success == true) {
+				setCursorPosition(41, 16);
+				cout << "  ";
+				setCursorPosition(41, 16);
+			}
+			else {
+				setCursorPosition(0, 16);
+				cout << "                                                ";
+				setCursorPosition(0, 16);
+				cout << "  Ваш ход. Введите координаты для атаки: ";
+			}
+			
 			cin >> letter >> number;
 			number_letter = letter - 'A';
 
@@ -398,9 +409,7 @@ int main()
 				
 				switch (enemy_zones[number - 1][number_letter]) {
 				case 1:
-					computer_ships[3] -= 1;
-				
-					
+					computer_ships[3] -= 1;	
 					break;
 				case 2:
 					computer_ships[2] -= 1;
@@ -424,6 +433,8 @@ int main()
 					player_won = true;
 				}
 				sequence = 1;
+				is_prev_success = true;
+
 			}
 			else {
 				setCursorPosition(47 + number_letter*2, 2 + number);
@@ -436,20 +447,22 @@ int main()
 				cout << "                            ";
 				
 				sequence = 0;
+				is_prev_success = false;
 			}
-
-			
 		}
 		else {
-			setCursorPosition(0, 16);
-			cout << "                                                                              ";
-			setCursorPosition(0, 16);
-			cout << "  Ход противника. Дождитесь завершения.";
+			if (is_prev_success_comp == false) {
+				setCursorPosition(0, 16);
+				cout << "                                                                              ";
+				setCursorPosition(0, 16);
+				cout << "  Ход противника. Дождитесь завершения.";
+			}
+			
 			int x = 0, y = 0;
 			x = rand() % 10;
 			y = rand() % 10;
 			if (self_zones[y][x] == 1 || self_zones[y][x] == 2 || self_zones[y][x] == 3 || self_zones[y][x] == 4) {
-				sequence = 0;
+				
 				setCursorPosition(12 + x * 2, 3 + y);
 				Sleep(1000);
 				cout << "x ";
@@ -478,7 +491,8 @@ int main()
 				Sleep(1500);
 				setCursorPosition(11, 14);
 				cout << "                            ";
-
+				is_prev_success_comp = true;
+				sequence = 0;
 				self_zones[y][x] = -2;
 			}
 			else {
@@ -493,6 +507,7 @@ int main()
 				setCursorPosition(15, 14);
 				cout << "                            ";
 				sequence = 1;
+				is_prev_success_comp = false;
 			}	
 		}
 
