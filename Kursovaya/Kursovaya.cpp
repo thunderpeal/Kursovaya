@@ -332,7 +332,7 @@ int main()
 
 	arrangement_computer(enemy_zones, alphabet);
 	setCursorPosition(0, 2);
-	cout << "  Расставить корабли самостоятельно"<<endl<<"  или использовать автоматическую расстановку? (1/0)";
+	cout << "     Расставить корабли самостоятельно"<<endl<<"     или использовать автоматическую расстановку? (1/0)";
 	
 	int answer;
 	cin >> answer;
@@ -441,7 +441,7 @@ int main()
 				cout << "o ";
 				
 				setCursorPosition(50, 14);
-				cout << "   Промах";
+				cout << "   Промах!";
 				Sleep(2000);
 				setCursorPosition(45, 14);
 				cout << "                            ";
@@ -455,7 +455,7 @@ int main()
 				setCursorPosition(0, 16);
 				cout << "                                                                              ";
 				setCursorPosition(0, 16);
-				cout << "  Ход противника. Дождитесь завершения.";
+				cout << "  Ход противника. Дождитесь окончания.";
 			}
 			
 			int x = 0, y = 0;
@@ -502,7 +502,7 @@ int main()
 				setCursorPosition(12 + x * 2, 3 + y);
 				cout << "о";
 				setCursorPosition(15, 14);
-				cout << "Промах";
+				cout << "Промах!";
 				Sleep(2000);
 				setCursorPosition(15, 14);
 				cout << "                            ";
