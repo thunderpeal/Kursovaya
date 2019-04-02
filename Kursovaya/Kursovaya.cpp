@@ -1,10 +1,10 @@
 ﻿#include "pch.h"
-#include "Sea_Battle.h"
+
 #include <iostream>
 #include <ctime>
 #include <conio.h>
 #include <Windows.h>
-
+using namespace std;
 #define UP_ARROW 72
 #define LEFT_ARROW 75
 #define DOWN_ARROW 80
@@ -124,11 +124,34 @@ int ** arrangement_player(int **array, const char alphabet[10]) {
 			cout << "     Сейчас расположите катер: ";
 			break;
 		}
-		ships[ship_count] -= 1;
+		
 
 		cin >> letter >> number;
 		number -= 1;
 		number_letter = letter - 'A'; 
+	
+
+		setCursorPosition(0, 21);
+		cout << "                                                                                 ";
+		bool can_be_placed = true;
+
+		for (int i = -1; i < 2; i++) {
+			for (int j = -1; j < 2; j++) {
+				if (number_letter + j >= 10 || number + j < 0 || number_letter + i >= 10 || number + i < 0) {
+					continue;
+				}
+				else if (array[number + i][number_letter + j] != 0) { //проверят их же на наличие других объектов
+					can_be_placed = false;
+				}
+			}
+		}
+		if (can_be_placed == false) {
+			setCursorPosition(0, 21);
+			cout << "     Вы не можете расположить корабль в этой точке. Попробуйте еще раз.";
+			continue;
+		}
+
+		else { ships[ship_count] -= 1; }
 		array[number][number_letter] = ship_length; //закидываем в массив нашего поля голову корабля
 
 		setCursorPosition(28 + number_letter*2, 3+number); //*2 учитывает пробелы в выводимом массиве
