@@ -10,6 +10,39 @@ using namespace std;
 #define DOWN_ARROW 80
 #define RIGHT_ARROW 77
 
+class Player {
+public:
+	int a;
+	int **zones = new int*[10];
+	Player() {
+		for (int i = 0; i < 10; i++) {
+			zones[i] = new int[10];
+			for (int j = 0; j < 10; j++) { zones[i][j] = 0; }
+		}
+	}
+
+	int ships[4] = { 4,6,6,4 };
+
+	bool is_dead(int a[4]) {
+		if (a[0] == 0 && a[1] == 0 && a[2] == 0 && a[3] == 0) {
+			return true;
+		}
+	}
+};
+
+class Ships {
+public:
+	int x1, y1, x2, y2;
+	int health_bar;
+
+	Ships(int a1, int b1, int a2, int b2, int l) {
+		x1 = a1;
+		y1 = b1;
+		x2 = a2;
+		y2 = b2;
+		health_bar = l;
+	};
+};
 
 void setCursorPosition(int x, int y)
 {
@@ -19,22 +52,14 @@ void setCursorPosition(int x, int y)
 	SetConsoleCursorPosition(hOut, coord);
 }
 
-int ** set_0(int **array) {
-	for (int i = 0; i < 10; i++) {
-		array[i] = new int[10];
-		for (int j = 0; j < 10; j++) { array[i][j] = 0; } //собственно, поля
-	}
-	return array;
-}
-
-void simple_vivod (int **array, const char alphabet[10], int i, bool costil) {
+void vivod(int **array, const char alphabet[10], int i, bool costil) {
 	for (int j = 0; j < 12; j++) {
-		if (i == 0 && j >= 2) { cout << alphabet[j - 2] << " ";  }
+		if (i == 0 && j >= 2) { cout << alphabet[j - 2] << " "; }
 		else if (i == 1) { break; }
 		else if ((i > 1 && j == 1) || (i == 0 && j < 2)) { cout << "  "; }
-		else if ( i > 1 && j == 0) { 
-			if (i-1 != 10) {cout << i - 1 << " ";}
-			else { cout << i - 1; }	
+		else if (i > 1 && j == 0) {
+			if (i - 1 != 10) { cout << i - 1 << " "; }
+			else { cout << i - 1; }
 		}
 		else {
 			if (costil == false) {
@@ -53,24 +78,11 @@ void simple_vivod (int **array, const char alphabet[10], int i, bool costil) {
 			else {
 				cout << ". ";
 			}
-			
 		}
 	}
 }
 
-void vivod(int **array_1, int **array_2, const char alphabet[10]) {
-	cout << endl; //отступ от границы сверху
-	for (int i = 0; i < 12; i++) {
-		cout << "        "; //отступ от границы слева 
-		simple_vivod(array_1, alphabet, i, false);
-		cout << "           ";
-		simple_vivod(array_2, alphabet, i, false);
-		cout << endl;
-	}
-	cout << endl << endl << endl; //отступ снизу
-}
-
-int ** arrangement_player(int **array, const char alphabet[10]) {
+int ** arrangement_player(int **array, const char alphabet[10], Ships **a) {
 	int ships[4] = { 1, 2, 3, 4 };
 	int ship_length = 0;
 	int ship_count = 0;
@@ -81,7 +93,7 @@ int ** arrangement_player(int **array, const char alphabet[10]) {
 	cout << endl;
 	for (int i = 0; i < 12; i++) {
 		cout << "                        "; //отступ от границы слева 
-		simple_vivod(array, alphabet, i, false);
+		vivod(array, alphabet, i, false);
 		cout << endl;
 	}
 	cout << endl << endl << endl;
@@ -124,23 +136,22 @@ int ** arrangement_player(int **array, const char alphabet[10]) {
 			cout << "     Сейчас расположите катер: ";
 			break;
 		}
-		
+
 
 		cin >> letter >> number;
 		number -= 1;
-		number_letter = letter - 'A'; 
-	
+		number_letter = letter - 'A';
+
 
 		setCursorPosition(0, 21);
 		cout << "                                                                                 ";
 		bool can_be_placed = true;
-
+		setCursorPosition(0, 26);
 		for (int i = -1; i < 2; i++) {
+			if (number + i >= 10 || number + i < 0) { continue; }
 			for (int j = -1; j < 2; j++) {
-				if (number_letter + j >= 10 || number + j < 0 || number_letter + i >= 10 || number + i < 0) {
-					continue;
-				}
-				else if (array[number + i][number_letter + j] != 0) { //проверят их же на наличие других объектов
+				if (number_letter + j >= 10 || number + j < 0) { continue; }
+				if (array[number + i][number_letter + j] != 0) { //проверят их же на наличие других объектов
 					can_be_placed = false;
 				}
 			}
@@ -154,7 +165,7 @@ int ** arrangement_player(int **array, const char alphabet[10]) {
 		else { ships[ship_count] -= 1; }
 		array[number][number_letter] = ship_length; //закидываем в массив нашего поля голову корабля
 
-		setCursorPosition(28 + number_letter*2, 3+number); //*2 учитывает пробелы в выводимом массиве
+		setCursorPosition(28 + number_letter * 2, 3 + number); //*2 учитывает пробелы в выводимом массиве
 		cout << array[number][number_letter];
 
 		if (ship_length != 1) {
@@ -186,7 +197,7 @@ int ** arrangement_player(int **array, const char alphabet[10]) {
 					for (int i = 1; i < ship_length; i++) {
 						array[number][number_letter - i] = ship_length;
 						setCursorPosition(28 + number_letter * 2 - 2 * i, 3 + number);
-						cout<< array[number][number_letter - i];
+						cout << array[number][number_letter - i];
 					}
 					break;
 				case RIGHT_ARROW:
@@ -202,11 +213,11 @@ int ** arrangement_player(int **array, const char alphabet[10]) {
 			}
 			else cout << KeyStroke << endl;
 		}
-		
+
 		if (ships[ship_count] == 0 && ship_count == 3) {
 			setCursorPosition(0, 20);
-			cout << "     Расстановка окончена! Компьютер так же расставил свои корабли."<<endl
-				<<"                    Приступим к игре." << endl;
+			cout << "     Расстановка окончена! Компьютер так же расставил свои корабли." << endl
+				<< "                    Приступим к игре." << endl;
 			//system("pause");
 			Sleep(4000);
 			break;
@@ -215,9 +226,10 @@ int ** arrangement_player(int **array, const char alphabet[10]) {
 	return array;
 }
 
-int ** arrangement_computer(int **array, const char alphabet[10]) {
+int ** arrangement_computer(int **array, const char alphabet[10], Ships **a) {
 	int ships[4] = { 1, 2, 3, 4 };
 	int ship_count = 0;
+	int check = 0;
 	int ship_length = 0;
 	int x = 0, y = 0;
 
@@ -252,7 +264,7 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 					if (x + j >= 10 || x + j < 0 || y + i >= 10 || y + i < 0) { //проверяет все клетки вокруг случайно 
 						continue;											//выбранной на выход за границы поля
 					}
-					else if (array[y + i][x + j] !=0 ) { //проверят их же на наличие других объектов
+					else if (array[y + i][x + j] != 0) { //проверят их же на наличие других объектов
 						can_be_placed = false;
 					}
 				}
@@ -264,28 +276,28 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 					else {
 						for (int j = -1; j < 2; j++) {
 							if (x + j >= 10 || x + j < 0 || y - i - 1 < 0) { continue; }
-							else if (array[y-i-1][x + j] != 0) { array_bo[0] = false; }
+							else if (array[y - i - 1][x + j] != 0) { array_bo[0] = false; }
 						}
 					}
-					if (y + i >= 10) { 
+					if (y + i >= 10) {
 						array_bo[1] = false; //вниз нельзя
-					} 
+					}
 					else {
 						for (int j = -1; j < 2; j++) {
-							if (x + j >= 10 || x + j < 0 || y + i + 1 >=10) { continue; }
-							else if (array[y+i+1][x + j] != 0) { array_bo[1] = false; }
+							if (x + j >= 10 || x + j < 0 || y + i + 1 >= 10) { continue; }
+							else if (array[y + i + 1][x + j] != 0) { array_bo[1] = false; }
 						}
 					}
-					if (x - i <= 0) { 
+					if (x - i <= 0) {
 						array_bo[2] = false;
 					} //влево нельзя
 					else {
 						for (int j = -1; j < 2; j++) {
 							if (y + j >= 10 || y + j < 0 || x - i - 1 < 0) { continue; }
-							else if (array[y+j][x - i -1] != 0) { array_bo[2] = false; }
+							else if (array[y + j][x - i - 1] != 0) { array_bo[2] = false; }
 						}
 					}
-					
+
 					if (x + i >= 10) {
 						array_bo[3] = false; //вправо нельзя
 					}
@@ -306,24 +318,28 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 					bool a = array_bo[enter];
 					if (a == true) { break; }
 				}
-				
+
 				switch (enter) {
 				case 0:
+					a[check] = new Ships(x, y, x, y - ship_length + 1, ship_length);
 					for (int i = 0; i < ship_length; i++) {
 						array[y - i][x] = ship_length;
 					}
 					break;
 				case 1:
+					a[check] = new Ships(x, y, x - ship_length + 1, y, ship_length);
 					for (int i = 0; i < ship_length; i++) {
 						array[y + i][x] = ship_length;
 					}
 					break;
 				case 2:
+					a[check] = new Ships(x, y, x - ship_length + 1, y, ship_length);
 					for (int i = 0; i < ship_length; i++) {
 						array[y][x - i] = ship_length;
 					}
 					break;
 				case 3:
+					a[check] = new Ships(x, y, x - ship_length + 1, y, ship_length);
 					for (int i = 0; i < ship_length; i++) {
 						array[y][x + i] = ship_length;
 					}
@@ -331,7 +347,8 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 				default:
 					cout << "Some other key." << endl;
 				}
-				
+				check += 1;
+
 				break;
 			}
 			else { continue; }
@@ -345,50 +362,55 @@ int ** arrangement_computer(int **array, const char alphabet[10]) {
 int main()
 {
 	srand(time(NULL));
-	
 	setlocale(LC_ALL, "Russian");
 	const char alphabet[10] = { 'A','B','C','D','E','F','G','H','I','J' };
-	int ** self_zones = new int*[10];
-	int ** enemy_zones = new int*[10];
-	self_zones = set_0(self_zones);
-	enemy_zones = set_0(enemy_zones);
+	Player player0;
+	Ships **player0_ships = new Ships*[10];
+	Player player1;
+	Ships **player1_ships = new Ships*[10];
+	arrangement_computer(player0.zones, alphabet, player0_ships);
 
-	arrangement_computer(enemy_zones, alphabet);
 	setCursorPosition(0, 2);
-	cout << "     Расставить корабли самостоятельно"<<endl<<"     или использовать автоматическую расстановку? (1/0)";
-	
+	cout << "     Расставить корабли самостоятельно" << endl << "     или использовать автоматическую расстановку? (1/0)";
+
 	int answer;
 	cin >> answer;
 	system("cls");
 	if (answer == 1) {
-		arrangement_player(self_zones, alphabet);
+		arrangement_player(player1.zones, alphabet, player1_ships);
 	}
 	else {
-		arrangement_computer(self_zones, alphabet);
+		arrangement_computer(player1.zones, alphabet, player1_ships);
 		setCursorPosition(0, 2);
-		cout << "     Расстановка окончена! Компьютер так же расставил свои корабли." << endl
+		cout << "     Расстановка окончена! Компьютер также расставил свои корабли." << endl
 			<< "                    Приступим к игре." << endl;
 		Sleep(3000);
 	}
 
 	system("cls");
-	vivod(self_zones, enemy_zones, alphabet);
+
+	cout << endl; //отступ от границы сверху
+	for (int i = 0; i < 12; i++) {
+		cout << "        "; //отступ от границы слева 
+		vivod(player1.zones, alphabet, i, false);
+		cout << "           ";
+		vivod(player0.zones, alphabet, i, false);
+		cout << endl;
+	}
+	cout << endl << endl << endl; //отступ снизу
 
 	int count_of_moves = 0;
 	int counter = 0;
-	int player_ships[4] = { 4,6,6,4 };
-	int computer_ships[4] = { 4,6,6,4 };
+
 	int number = 0;
 	int number_letter = 0;
 	char letter;
 	int sequence = rand() % 2;
-	bool player_won = false;
-	bool computer_won = false;
 
 	bool is_prev_success = false;
 	bool is_prev_success_comp = false;
 
-	setCursorPosition(0,16);
+	setCursorPosition(0, 16);
 	cout << "  Вы находитесь в режиме боя. Право первого хода определяется жребием." << endl;
 	cout << "  Ваши корабли располагаются на поле слева. Удачи!";
 	Sleep(5000);
@@ -407,9 +429,8 @@ int main()
 	cout << "Ходов " << count_of_moves;
 	while (true) {
 		setCursorPosition(6, 0);
-		cout  << count_of_moves << "   ";
+		cout << count_of_moves << "   ";
 		if (sequence == 1) {
-
 			if (is_prev_success == true) {
 				setCursorPosition(41, 16);
 				cout << "  ";
@@ -421,27 +442,27 @@ int main()
 				setCursorPosition(0, 16);
 				cout << "  Ваш ход. Введите координаты для атаки: ";
 			}
-			
+
 			cin >> letter >> number;
 			number_letter = letter - 'A';
 
-			if (enemy_zones[number - 1][number_letter] == 1 || enemy_zones[number - 1][number_letter] == 2
-				|| enemy_zones[number - 1][number_letter] == 3 || enemy_zones[number - 1][number_letter] == 4) {
-				setCursorPosition(47 + number_letter*2, 2 + number);
+			if (player0.zones[number - 1][number_letter] == 1 || player0.zones[number - 1][number_letter] == 2
+				|| player0.zones[number - 1][number_letter] == 3 || player0.zones[number - 1][number_letter] == 4) {
+				setCursorPosition(47 + number_letter * 2, 2 + number);
 				cout << "x ";
-				
-				switch (enemy_zones[number - 1][number_letter]) {
+
+				switch (player0.zones[number - 1][number_letter]) {
 				case 1:
-					computer_ships[3] -= 1;	
+					player0.ships[3] -= 1;
 					break;
 				case 2:
-					computer_ships[2] -= 1;
+					player0.ships[2] -= 1;
 					break;
 				case 3:
-					computer_ships[1] -= 1;
+					player0.ships[1] -= 1;
 					break;
 				case 4:
-					computer_ships[0] -= 1;
+					player0.ships[0] -= 1;
 					break;
 				}
 
@@ -451,24 +472,22 @@ int main()
 				setCursorPosition(45, 14);
 				cout << "                            ";
 
-				enemy_zones[number - 1][number_letter] = -2;
-				if (computer_ships[0] == 0 && computer_ships[1] == 0 && computer_ships[2] == 0 && computer_ships[3] == 0) {
-					player_won = true;
-				}
+				player0.zones[number - 1][number_letter] = -2;
+
 				sequence = 1;
 				is_prev_success = true;
 
 			}
 			else {
-				setCursorPosition(47 + number_letter*2, 2 + number);
+				setCursorPosition(47 + number_letter * 2, 2 + number);
 				cout << "o ";
-				
+
 				setCursorPosition(50, 14);
 				cout << "   Промах!";
 				Sleep(2000);
 				setCursorPosition(45, 14);
 				cout << "                            ";
-				
+
 				sequence = 0;
 				is_prev_success = false;
 			}
@@ -480,35 +499,33 @@ int main()
 				setCursorPosition(0, 16);
 				cout << "  Ход противника. Дождитесь окончания.";
 			}
-			
+
 			int x = 0, y = 0;
 			x = rand() % 10;
 			y = rand() % 10;
-			if (self_zones[y][x] == 1 || self_zones[y][x] == 2 || self_zones[y][x] == 3 || self_zones[y][x] == 4) {
-				
+			if (player1.zones[y][x] == 1 || player1.zones[y][x] == 2 || player1.zones[y][x] == 3 || player1.zones[y][x] == 4) {
+
 				setCursorPosition(12 + x * 2, 3 + y);
 				Sleep(1000);
 				cout << "x ";
 				setCursorPosition(12 + x * 2, 3 + y);
 				Sleep(2000);
-				
-				switch (self_zones[y][x]) {
+
+				switch (player1.zones[y][x]) {
 				case 1:
-					player_ships[3] -= 1;
+					player1.ships[3] -= 1;
 					break;
 				case 2:
-					player_ships[2] -= 1;
+					player1.ships[2] -= 1;
 					break;
 				case 3:
-					player_ships[1] -= 1;
+					player1.ships[1] -= 1;
 					break;
 				case 4:
-					player_ships[0] -= 1;
+					player1.ships[0] -= 1;
 					break;
 				}
-				if (player_ships[0] == 0 && player_ships[1] == 0 && player_ships[2] == 0 && player_ships[3] == 0) {
-					computer_won = true;
-				}
+
 				setCursorPosition(11, 14);
 				cout << "Есть пробитие!";
 				Sleep(1500);
@@ -516,12 +533,12 @@ int main()
 				cout << "                            ";
 				is_prev_success_comp = true;
 				sequence = 0;
-				self_zones[y][x] = -2;
+				player1.zones[y][x] = -2;
 			}
 			else {
 				setCursorPosition(12 + x * 2, 3 + y);
 				Sleep(1500);
-				
+
 				setCursorPosition(12 + x * 2, 3 + y);
 				cout << "о";
 				setCursorPosition(15, 14);
@@ -531,14 +548,14 @@ int main()
 				cout << "                            ";
 				sequence = 1;
 				is_prev_success_comp = false;
-			}	
+			}
 		}
 
-		if (player_won == true) {
+		if (player0.is_dead(player0.ships) == true) {
 			setCursorPosition(0, 20);
 			cout << "  Вы выиграли! Поздравляем!";
 		}
-		else if(computer_won == true) {
+		else if (player1.is_dead(player1.ships) == true) {
 			setCursorPosition(0, 20);
 			cout << "  Вы проиграли!";
 		}
