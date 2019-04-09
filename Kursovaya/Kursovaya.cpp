@@ -44,6 +44,15 @@ public:
 	};
 };
 
+void delete_dynamics() {
+
+}
+
+void reset_arrangement() {
+
+}
+
+
 void setCursorPosition(int x, int y)
 {
 	static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -398,7 +407,7 @@ int main()
 	arrangement_computer(player0.zones, alphabet, player0_ships);
 
 	setCursorPosition(0, 2);
-	cout << "     Расставить корабли самостоятельно" << endl << "     или использовать автоматическую расстановку? (1/0)";
+	cout << "     Расставить корабли самостоятельно" << endl << "     или использовать автоматическую расстановку?(1/0) ";
 
 	int answer;
 	cin >> answer;
