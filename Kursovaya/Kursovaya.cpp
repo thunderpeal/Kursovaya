@@ -12,15 +12,20 @@ using namespace std;
 
 class Player {
 public:
-	int a;
 	int **zones = new int*[10];
-	Player() {
+	void set_0(int**a) {
 		for (int i = 0; i < 10; i++) {
 			zones[i] = new int[10];
 			for (int j = 0; j < 10; j++) { zones[i][j] = 0; }
 		}
 	}
-
+	Player() {
+		set_0(zones);
+	}
+	~Player()
+	{
+	}
+	
 	int ships[4] = { 4,6,6,4 };
 
 	bool is_dead(int a[4]) {
@@ -405,24 +410,47 @@ int main()
 	Player player1;
 	Ships **player1_ships = new Ships*[10];
 	arrangement_computer(player0.zones, alphabet, player0_ships);
-
-	setCursorPosition(0, 2);
-	cout << "     Расставить корабли самостоятельно" << endl << "     или использовать автоматическую расстановку?(1/0) ";
+	
 
 	int answer;
-	cin >> answer;
-	system("cls");
-	if (answer == 1) {
-		arrangement_player(player1.zones, alphabet, player1_ships);
-	}
-	else {
-		arrangement_computer(player1.zones, alphabet, player1_ships);
+	int answer_1;
+	while (true) {
 		setCursorPosition(0, 2);
-		cout << "     Расстановка окончена! Компьютер также расставил свои корабли." << endl
-			<< "                    Приступим к игре." << endl;
-		Sleep(3000);
+		cout << "     Расставить корабли самостоятельно" << endl << "     или использовать автоматическую расстановку?(1/0) ";
+		cin >> answer;
+		system("cls");
+		if (answer == 1) {
+			arrangement_player(player1.zones, alphabet, player1_ships);
+			setCursorPosition(0, 22);
+			cout << "      Подтвердить установку или повторить с нуля?(1/0) ";
+			cin >> answer_1;
+			if (answer_1 == 0) {
+				player1.set_0(player1.zones);
+				system("cls");
+				continue;
+			}
+			else { break; }
+		}
+		else {
+			arrangement_computer(player1.zones, alphabet, player1_ships);
+			setCursorPosition(0, 2);
+			cout << "      Подтвердить установку или повторить с нуля?(1/0) ";
+			cin >> answer_1;
+			if (answer_1 == 0) {
+				player1.set_0(player1.zones);
+				system("cls");
+				continue;
+			}
+			else {
+				setCursorPosition(0, 2);
+				cout << "     Расстановка окончена! Компьютер также расставил свои корабли." << endl
+					<< "                    Приступим к игре." << endl;
+				Sleep(3000);
+				break;
+			}
+			
+		}
 	}
-
 	system("cls");
 
 	cout << endl; //отступ от границы сверху
