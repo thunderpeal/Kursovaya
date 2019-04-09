@@ -96,7 +96,7 @@ void ship_location_checker(int ** array, bool dir[4], bool* c_b_p, int x, int y,
 
 	if (*c_b_p == true) {
 		for (int i = 1; i < ship_length; i++) {//в какую сторону нельзя повернуть корабль
-			if (y - i <= 0) { dir[0] = false; }//вверх нельзя
+			if (y - i < 0) { dir[0] = false; }//вверх нельзя
 			else {
 				for (int j = -1; j < 2; j++) {
 					if (x + j >= 10 || x + j < 0 || y - i - 1 < 0) { continue; }
@@ -112,7 +112,7 @@ void ship_location_checker(int ** array, bool dir[4], bool* c_b_p, int x, int y,
 					else if (array[y + i + 1][x + j] != 0) { dir[1] = false; }
 				}
 			}
-			if (x - i <= 0) {
+			if (x - i < 0) {
 				dir[2] = false;
 			} //влево нельзя
 			else {
@@ -201,10 +201,9 @@ void arrangement_player(int **array, const char alphabet[10], Ships **a) {
 			cout << "     Вы не можете расположить корабль в этой точке. Попробуйте еще раз.";
 			continue;
 		}
-
+		
 		else { ships[ship_count] -= 1; }
 		array[number][number_letter] = ship_length; //закидываем в массив нашего поля голову корабля
-
 		setCursorPosition(28 + number_letter * 2, 3 + number); //*2 учитывает пробелы в выводимом массиве
 		cout << array[number][number_letter];
 		
