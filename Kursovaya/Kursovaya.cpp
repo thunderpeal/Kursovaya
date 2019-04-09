@@ -207,51 +207,90 @@ void arrangement_player(int **array, const char alphabet[10], Ships **a) {
 
 		setCursorPosition(28 + number_letter * 2, 3 + number); //*2 учитывает пробелы в выводимом массиве
 		cout << array[number][number_letter];
+		
 
 		if (ship_length != 1) {
 			setCursorPosition(0, 20);
-			cout << "     Теперь введите направление расположения корабля стрелкой : ";
-			int KeyStroke;
-			KeyStroke = _getch();
+			cout << "     Теперь введите направление расположения корабля стрелкой: ";
+			bool exit = false;
+			while (true) {
+				if (exit == true) { break; }
+				int KeyStroke;
+				KeyStroke = _getch();
 
-			if (KeyStroke == 224)
-			{
-				KeyStroke = _getch(); // Even though there are 2 getch() it reads one keystroke
-				switch (KeyStroke)
+				if (KeyStroke == 224)
 				{
-				case UP_ARROW:
-					for (int i = 1; i < ship_length; i++) {
-						array[number - i][number_letter] = ship_length;
-						setCursorPosition(28 + number_letter * 2, 3 + number - i);
-						cout << array[number - i][number_letter];
+					KeyStroke = _getch(); // Even though there are 2 getch() it reads one keystroke
+					switch (KeyStroke)
+					{
+					case UP_ARROW:
+						if (directions[0] == true) {
+							for (int i = 1; i < ship_length; i++) {
+								array[number - i][number_letter] = ship_length;
+								setCursorPosition(28 + number_letter * 2, 3 + number - i);
+								cout << array[number - i][number_letter];
+								exit = true;
+							}
+						}
+						else {
+							setCursorPosition(0, 21);
+							cout << "     Вы не можете расположить корабль в эту сторону. Попробуйте еще раз.";
+							setCursorPosition(63, 20);
+						}
+						break;
+					case DOWN_ARROW:
+						if (directions[1] == true) {
+							for (int i = 1; i < ship_length; i++) {
+								array[number + i][number_letter] = ship_length;
+								setCursorPosition(28 + number_letter * 2, 3 + number + i);
+								cout << array[number + i][number_letter];
+								exit = true;
+							}
+						}
+						else {
+							setCursorPosition(0, 21);
+							cout << "     Вы не можете расположить корабль в эту сторону. Попробуйте еще раз.";
+							setCursorPosition(63, 20);
+						}
+						break;
+					case LEFT_ARROW:
+						if (directions[2] == true) {
+							for (int i = 1; i < ship_length; i++) {
+								array[number][number_letter - i] = ship_length;
+								setCursorPosition(28 + number_letter * 2 - 2 * i, 3 + number);
+								cout << array[number][number_letter - i];
+								exit = true;
+							}
+						}
+						else {
+							setCursorPosition(0, 21);
+							cout << "     Вы не можете расположить корабль в эту сторону. Попробуйте еще раз.";
+							setCursorPosition(63, 20);
+						}
+						break;
+					case RIGHT_ARROW:
+						if (directions[3] == true) {
+							for (int i = 1; i < ship_length; i++) {
+								array[number][number_letter + i] = ship_length;
+								setCursorPosition(28 + number_letter * 2 + 2 * i, 3 + number);
+								cout << array[number][number_letter + i];
+								exit = true;
+							}
+						}
+						else {
+							setCursorPosition(0, 21);
+							cout << "     Вы не можете расположить корабль в эту сторону. Попробуйте еще раз.";
+							setCursorPosition(63, 20);
+						}
+						break;
+					default:
+						cout << "Some other key." << endl;
 					}
-					break;
-				case DOWN_ARROW:
-					for (int i = 1; i < ship_length; i++) {
-						array[number + i][number_letter] = ship_length;
-						setCursorPosition(28 + number_letter * 2, 3 + number + i);
-						cout << array[number + i][number_letter];
-					}
-					break;
-				case LEFT_ARROW:
-					for (int i = 1; i < ship_length; i++) {
-						array[number][number_letter - i] = ship_length;
-						setCursorPosition(28 + number_letter * 2 - 2 * i, 3 + number);
-						cout << array[number][number_letter - i];
-					}
-					break;
-				case RIGHT_ARROW:
-					for (int i = 1; i < ship_length; i++) {
-						array[number][number_letter + i] = ship_length;
-						setCursorPosition(28 + number_letter * 2 + 2 * i, 3 + number);
-						cout << array[number][number_letter + i];
-					}
-					break;
-				default:
-					cout << "Some other key." << endl;
 				}
+				else cout << KeyStroke << endl;
 			}
-			else cout << KeyStroke << endl;
+			setCursorPosition(0, 21);
+			cout << "                                                                                         ";
 		}
 
 		if (ships[ship_count] == 0 && ship_count == 3) {
