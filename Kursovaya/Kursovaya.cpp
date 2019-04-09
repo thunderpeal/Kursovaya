@@ -52,6 +52,36 @@ void setCursorPosition(int x, int y)
 	SetConsoleCursorPosition(hOut, coord);
 }
 
+void vivod(int **array, const char alphabet[10], int i, bool costil) {
+	for (int j = 0; j < 12; j++) {
+		if (i == 0 && j >= 2) { cout << alphabet[j - 2] << " "; }
+		else if (i == 1) { break; }
+		else if ((i > 1 && j == 1) || (i == 0 && j < 2)) { cout << "  "; }
+		else if (i > 1 && j == 0) {
+			if (i - 1 != 10) { cout << i - 1 << " "; }
+			else { cout << i - 1; }
+		}
+		else {
+			if (costil == false) {
+				switch (array[i - 2][j - 2]) {
+				case 0:
+					cout << ". ";
+					break;
+				case 1:
+				case 2:
+				case 3:
+				case 4:
+					cout << array[i - 2][j - 2] << " ";
+					break;
+				}
+			}
+			else {
+				cout << ". ";
+			}
+		}
+	}
+}
+
 void ship_location_checker(int ** array, bool dir[4], bool* c_b_p, int x, int y, int ship_length) {
 	for (int i = -1; i < 2; i++) {
 		for (int j = -1; j < 2; j++) {
@@ -105,35 +135,6 @@ void ship_location_checker(int ** array, bool dir[4], bool* c_b_p, int x, int y,
 	}
 	if (dir[0] == false && dir[1] == false && dir[2] == false && dir[3] == false) {
 		*c_b_p = false;
-	}
-}
-void vivod(int **array, const char alphabet[10], int i, bool costil) {
-	for (int j = 0; j < 12; j++) {
-		if (i == 0 && j >= 2) { cout << alphabet[j - 2] << " "; }
-		else if (i == 1) { break; }
-		else if ((i > 1 && j == 1) || (i == 0 && j < 2)) { cout << "  "; }
-		else if (i > 1 && j == 0) {
-			if (i - 1 != 10) { cout << i - 1 << " "; }
-			else { cout << i - 1; }
-		}
-		else {
-			if (costil == false) {
-				switch (array[i - 2][j - 2]) {
-				case 0:
-					cout << ". ";
-					break;
-				case 1:
-				case 2:
-				case 3:
-				case 4:
-					cout << array[i - 2][j - 2] << " ";
-					break;
-				}
-			}
-			else {
-				cout << ". ";
-			}
-		}
 	}
 }
 
