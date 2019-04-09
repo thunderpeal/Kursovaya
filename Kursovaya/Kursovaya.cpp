@@ -52,6 +52,61 @@ void setCursorPosition(int x, int y)
 	SetConsoleCursorPosition(hOut, coord);
 }
 
+void ship_location_checker(int ** array, bool dir[4], bool* c_b_p, int x, int y, int ship_length) {
+	for (int i = -1; i < 2; i++) {
+		for (int j = -1; j < 2; j++) {
+			if (x + j >= 10 || x + j < 0 || y + i >= 10 || y + i < 0) { //проверяет все клетки вокруг случайно 
+				continue;											//выбранной на выход за границы поля
+			}
+			else if (array[y + i][x + j] != 0) { //проверят их же на наличие других объектов
+				*c_b_p = false;
+			}
+		}
+	}
+
+	if (*c_b_p == true) {
+		for (int i = 1; i < ship_length; i++) {//в какую сторону нельзя повернуть корабль
+			if (y - i <= 0) { dir[0] = false; }//вверх нельзя
+			else {
+				for (int j = -1; j < 2; j++) {
+					if (x + j >= 10 || x + j < 0 || y - i - 1 < 0) { continue; }
+					else if (array[y - i - 1][x + j] != 0) { dir[0] = false; }
+				}
+			}
+			if (y + i >= 10) {
+				dir[1] = false; //вниз нельзя
+			}
+			else {
+				for (int j = -1; j < 2; j++) {
+					if (x + j >= 10 || x + j < 0 || y + i + 1 >= 10) { continue; }
+					else if (array[y + i + 1][x + j] != 0) { dir[1] = false; }
+				}
+			}
+			if (x - i <= 0) {
+				dir[2] = false;
+			} //влево нельзя
+			else {
+				for (int j = -1; j < 2; j++) {
+					if (y + j >= 10 || y + j < 0 || x - i - 1 < 0) { continue; }
+					else if (array[y + j][x - i - 1] != 0) { dir[2] = false; }
+				}
+			}
+
+			if (x + i >= 10) {
+				dir[3] = false; //вправо нельзя
+			}
+			else {
+				for (int j = -1; j < 2; j++) {
+					if (y + j >= 10 || y + j < 0 || x + i + 1 >= 10) { continue; }
+					else if (array[y + j][x + i + 1] != 0) { dir[3] = false; }
+				}
+			}
+		}
+	}
+	if (dir[0] == false && dir[1] == false && dir[2] == false && dir[3] == false) {
+		*c_b_p = false;
+	}
+}
 void vivod(int **array, const char alphabet[10], int i, bool costil) {
 	for (int j = 0; j < 12; j++) {
 		if (i == 0 && j >= 2) { cout << alphabet[j - 2] << " "; }
@@ -82,7 +137,7 @@ void vivod(int **array, const char alphabet[10], int i, bool costil) {
 	}
 }
 
-int ** arrangement_player(int **array, const char alphabet[10], Ships **a) {
+void arrangement_player(int **array, const char alphabet[10], Ships **a) {
 	int ships[4] = { 1, 2, 3, 4 };
 	int ship_length = 0;
 	int ship_count = 0;
@@ -105,57 +160,41 @@ int ** arrangement_player(int **array, const char alphabet[10], Ships **a) {
 		if (ships[ship_count] == 0) {
 			ship_count += 1;
 		}
-
+		setCursorPosition(0, 20);
+		cout << "                                                                ";
+		setCursorPosition(0, 20);
 		switch (ship_count) {
 		case 0:
 			ship_length = 4;
-			setCursorPosition(0, 20);
-			cout << "                                                                ";
-			setCursorPosition(0, 20);
 			cout << "     Сейчас расположите линкор: ";
 			break;
 		case 1:
 			ship_length = 3;
-			setCursorPosition(0, 20);
-			cout << "                                                                ";
-			setCursorPosition(0, 20);
-			cout << "     Сейчас расположите крейсер: ";
+			cout << "     Теперь расположите крейсер: ";
 			break;
 		case 2:
 			ship_length = 2;
-			setCursorPosition(0, 20);
-			cout << "                                                                ";
-			setCursorPosition(0, 20);
-			cout << "     Сейчас расположите эсминец: ";
+			cout << "     Очередь расположить эсминец: ";
 			break;
 		case 3:
 			ship_length = 1;
-			setCursorPosition(0, 20);
-			cout << "                                                                ";
-			setCursorPosition(0, 20);
 			cout << "     Сейчас расположите катер: ";
 			break;
 		}
-
 
 		cin >> letter >> number;
 		number -= 1;
 		number_letter = letter - 'A';
 
-
 		setCursorPosition(0, 21);
 		cout << "                                                                                 ";
+		//setCursorPosition(0, 26);
 		bool can_be_placed = true;
-		setCursorPosition(0, 26);
-		for (int i = -1; i < 2; i++) {
-			if (number + i >= 10 || number + i < 0) { continue; }
-			for (int j = -1; j < 2; j++) {
-				if (number_letter + j >= 10 || number + j < 0) { continue; }
-				if (array[number + i][number_letter + j] != 0) { //проверят их же на наличие других объектов
-					can_be_placed = false;
-				}
-			}
-		}
+		bool *directions = new bool[4];
+		directions[0] = true; directions[1] = true; directions[2] = true; directions[3] = true;
+		
+		ship_location_checker(array, directions, &can_be_placed, number_letter, number, ship_length);
+
 		if (can_be_placed == false) {
 			setCursorPosition(0, 21);
 			cout << "     Вы не можете расположить корабль в этой точке. Попробуйте еще раз.";
@@ -223,10 +262,9 @@ int ** arrangement_player(int **array, const char alphabet[10], Ships **a) {
 			break;
 		}
 	}
-	return array;
 }
 
-int ** arrangement_computer(int **array, const char alphabet[10], Ships **a) {
+void arrangement_computer(int **array, const char alphabet[10], Ships **a) {
 	int ships[4] = { 1, 2, 3, 4 };
 	int ship_count = 0;
 	int check = 0;
@@ -255,103 +293,53 @@ int ** arrangement_computer(int **array, const char alphabet[10], Ships **a) {
 		while (true) {
 			x = rand() % 10;
 			y = rand() % 10;
-			bool array_bo[4] = { true, true, true, true }; //ВЕРХ НИЗ ЛЕВО ПРАВО
+			bool *directions = new bool[4];
+			directions[0] = true; directions[1] = true; directions[2] = true; directions[3] = true;
 
 			bool can_be_placed = true;
 
-			for (int i = -1; i < 2; i++) {
-				for (int j = -1; j < 2; j++) {
-					if (x + j >= 10 || x + j < 0 || y + i >= 10 || y + i < 0) { //проверяет все клетки вокруг случайно 
-						continue;											//выбранной на выход за границы поля
-					}
-					else if (array[y + i][x + j] != 0) { //проверят их же на наличие других объектов
-						can_be_placed = false;
-					}
-				}
+			ship_location_checker(array, directions, &can_be_placed, x, y, ship_length);
+			if (can_be_placed == false) {
+				continue;
+			}
+			ships[ship_count] -= 1;
+			int enter = -1;
+			while (true) { //рандомно выбираем направление из доступных
+				enter = rand() % 4;
+				bool a = directions[enter];
+				if (a == true) { break; }
 			}
 
-			if (can_be_placed == true) {
-				for (int i = 1; i < ship_length; i++) {//в какую сторону нельзя повернуть корабль
-					if (y - i <= 0) { array_bo[0] = false; }//вверх нельзя
-					else {
-						for (int j = -1; j < 2; j++) {
-							if (x + j >= 10 || x + j < 0 || y - i - 1 < 0) { continue; }
-							else if (array[y - i - 1][x + j] != 0) { array_bo[0] = false; }
-						}
-					}
-					if (y + i >= 10) {
-						array_bo[1] = false; //вниз нельзя
-					}
-					else {
-						for (int j = -1; j < 2; j++) {
-							if (x + j >= 10 || x + j < 0 || y + i + 1 >= 10) { continue; }
-							else if (array[y + i + 1][x + j] != 0) { array_bo[1] = false; }
-						}
-					}
-					if (x - i <= 0) {
-						array_bo[2] = false;
-					} //влево нельзя
-					else {
-						for (int j = -1; j < 2; j++) {
-							if (y + j >= 10 || y + j < 0 || x - i - 1 < 0) { continue; }
-							else if (array[y + j][x - i - 1] != 0) { array_bo[2] = false; }
-						}
-					}
-
-					if (x + i >= 10) {
-						array_bo[3] = false; //вправо нельзя
-					}
-					else {
-						for (int j = -1; j < 2; j++) {
-							if (y + j >= 10 || y + j < 0 || x + i + 1 >= 10) { continue; }
-							else if (array[y + j][x + i + 1] != 0) { array_bo[3] = false; }
-						}
-					}
+			switch (enter) {
+			case 0:
+				a[check] = new Ships(x, y, x, y - ship_length + 1, ship_length);
+				for (int i = 0; i < ship_length; i++) {
+					array[y - i][x] = ship_length;
 				}
-
-				if (array_bo[0] == false && array_bo[1] == false && array_bo[2] == false && array_bo[3] == false) { continue; }
-
-				ships[ship_count] -= 1;
-				int enter = -1;
-				while (true) { //рандомно выбираем направление из доступных
-					enter = rand() % 4;
-					bool a = array_bo[enter];
-					if (a == true) { break; }
-				}
-
-				switch (enter) {
-				case 0:
-					a[check] = new Ships(x, y, x, y - ship_length + 1, ship_length);
-					for (int i = 0; i < ship_length; i++) {
-						array[y - i][x] = ship_length;
-					}
-					break;
-				case 1:
-					a[check] = new Ships(x, y, x - ship_length + 1, y, ship_length);
-					for (int i = 0; i < ship_length; i++) {
-						array[y + i][x] = ship_length;
-					}
-					break;
-				case 2:
-					a[check] = new Ships(x, y, x - ship_length + 1, y, ship_length);
-					for (int i = 0; i < ship_length; i++) {
-						array[y][x - i] = ship_length;
-					}
-					break;
-				case 3:
-					a[check] = new Ships(x, y, x - ship_length + 1, y, ship_length);
-					for (int i = 0; i < ship_length; i++) {
-						array[y][x + i] = ship_length;
-					}
-					break;
-				default:
-					cout << "Some other key." << endl;
-				}
-				check += 1;
-
 				break;
+			case 1:
+				a[check] = new Ships(x, y, x - ship_length + 1, y, ship_length);
+				for (int i = 0; i < ship_length; i++) {
+					array[y + i][x] = ship_length;
+				}
+				break;
+			case 2:
+				a[check] = new Ships(x, y, x - ship_length + 1, y, ship_length);
+				for (int i = 0; i < ship_length; i++) {
+					array[y][x - i] = ship_length;
+				}
+				break;
+			case 3:
+				a[check] = new Ships(x, y, x - ship_length + 1, y, ship_length);
+				for (int i = 0; i < ship_length; i++) {
+					array[y][x + i] = ship_length;
+				}
+				break;
+			default:
+				cout << "Some other key." << endl;
 			}
-			else { continue; }
+			check += 1;
+			break;
 		}
 		if (ships[ship_count] == 0 && ship_count == 3) {
 			break;
