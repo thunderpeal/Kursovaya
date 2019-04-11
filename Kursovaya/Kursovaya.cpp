@@ -14,8 +14,7 @@ class Ships {
 public:
 	int x1, y1, x2, y2;
 	int health_bar;
-
-	Ships(int a1, int b1, int a2, int b2, int l) {
+	void set(int a1, int b1, int a2, int b2, int l) {
 		x1 = a1;
 		y1 = b1;
 		x2 = a2;
@@ -84,7 +83,7 @@ public:
 		}
 	}
 
-	void auto_arrangement(int **array, const char alphabet[10], Ships **a) {
+	void auto_arrangement(int **array, const char alphabet[10], Ships *a) {
 		int ships[4] = { 1, 2, 3, 4 };
 		int ship_count = 0;
 		int check = 0;
@@ -132,25 +131,25 @@ public:
 
 				switch (enter) {
 				case 0:
-					a[check] = new Ships(x, y, x, y - ship_length + 1, ship_length);
+					a[check].set(x,y, x ,y - ship_length + 1, ship_length);
 					for (int i = 0; i < ship_length; i++) {
 						array[y - i][x] = ship_length;
 					}
 					break;
 				case 1:
-					a[check] = new Ships(x, y, x - ship_length + 1, y, ship_length);
+					a[check].set(x, y, x, y + ship_length - 1, ship_length);
 					for (int i = 0; i < ship_length; i++) {
 						array[y + i][x] = ship_length;
 					}
 					break;
 				case 2:
-					a[check] = new Ships(x, y, x - ship_length + 1, y, ship_length);
+					a[check].set(x, y, x - ship_length + 1, y, ship_length);
 					for (int i = 0; i < ship_length; i++) {
 						array[y][x - i] = ship_length;
 					}
 					break;
 				case 3:
-					a[check] = new Ships(x, y, x - ship_length + 1, y, ship_length);
+					a[check].set(x, y, x + ship_length -1, y, ship_length);
 					for (int i = 0; i < ship_length; i++) {
 						array[y][x + i] = ship_length;
 					}
@@ -230,7 +229,7 @@ public:
 		set_0(zones);
 	}
 
-	void player_arrangement(int **array, const char alphabet[10], Ships **a) {
+	void player_arrangement(int **array, const char alphabet[10], Ships *a) {
 		int ships[4] = { 1, 2, 3, 4 };
 		int ship_length = 0;
 		int ship_count = 0;
@@ -403,9 +402,9 @@ int main()
 	const char alphabet[10] = { 'A','B','C','D','E','F','G','H','I','J' };
 	Game game;
 	Computer player0;
-	Ships **player0_ships = new Ships*[10];
+	Ships *player0_ships = new Ships[10];
 	Player player1;
-	Ships **player1_ships = new Ships*[10];
+	Ships *player1_ships = new Ships[10];
 	player0.auto_arrangement(player0.zones, alphabet, player0_ships);
 	
 
@@ -496,6 +495,13 @@ int main()
 	game.setCursorPosition(0, 0);
 	cout << "Ходов " << count_of_moves;
 	while (true) {
+		/*game.setCursorPosition(2,27);
+		for (int i = 0; i < 10; i++) {
+			cout << player1_ships[i].x1 << " " << player1_ships[i].x2 << " " << player1_ships[i].y1 << " " << player1_ships[i].y2 << " "
+				<< player1_ships[i].health_bar;
+			cout<<endl;
+		}
+		system("pause");*/
 		game.setCursorPosition(6, 0);
 		cout << count_of_moves << "   ";
 		if (sequence == 1) {
