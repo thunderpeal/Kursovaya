@@ -48,7 +48,7 @@ public:
 		SetConsoleCursorPosition(hOut, coord);
 	}
 
-	void vivod(int **array, const char alphabet[10], int i, bool costil) {
+	void print_gamezone(int **array, const char alphabet[10], int i, bool costil) {
 		for (int j = 0; j < 12; j++) {
 			if (i == 0 && j >= 2) { cout << alphabet[j - 2] << " "; }
 			else if (i == 1) { break; }
@@ -241,7 +241,7 @@ public:
 		cout << endl;
 		for (int i = 0; i < 12; i++) {
 			cout << "                        "; //отступ от границы слева 
-			vivod(array, alphabet, i, false);
+			print_gamezone(array, alphabet, i, false);
 			cout << endl;
 		}
 		cout << endl << endl << endl;
@@ -439,7 +439,7 @@ int main()
 			cout <<  endl;
 			for (int i = 0; i < 12; i++) {
 				cout << "                        "; //отступ от границы слева 
-				game.vivod(player1.zones, alphabet, i, false);
+				game.print_gamezone(player1.zones, alphabet, i, false);
 				cout << endl;
 			}
 			
@@ -466,9 +466,9 @@ int main()
 	cout << endl; //отступ от границы сверху
 	for (int i = 0; i < 12; i++) {
 		cout << "        "; //отступ от границы слева 
-		vivod(player1.zones, alphabet, i, false);
+		game.print_gamezone(player1.zones, alphabet, i, false);
 		cout << "           ";
-		vivod(player0.zones, alphabet, i, false);
+		game.print_gamezone(player0.zones, alphabet, i, false);
 		cout << endl;
 	}
 	cout << endl << endl << endl; //отступ снизу
