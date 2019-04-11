@@ -1,10 +1,10 @@
 ﻿#include "pch.h"
-
 #include <iostream>
 #include <ctime>
 #include <conio.h>
 #include <Windows.h>
 using namespace std;
+
 #define UP_ARROW 72
 #define LEFT_ARROW 75
 #define DOWN_ARROW 80
@@ -23,10 +23,6 @@ public:
 		health_bar = l;
 	};
 };
-
-
-
-
 
 class Game {
 public:
@@ -76,6 +72,10 @@ public:
 				}
 			}
 		}
+	}
+
+	void delete_dynamics() {
+
 	}
 
 	bool is_dead(int a[4]) {
@@ -394,12 +394,6 @@ public:
 		set_0(zones);
 	}
 };
-
-
-
-void delete_dynamics() {
-
-}
 
 
 int main()
