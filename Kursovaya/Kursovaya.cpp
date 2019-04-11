@@ -529,6 +529,8 @@ int main()
 	Ships *current_ship = 0;
 	bool help = false;
 	int enter = -1;
+	bool *directions_con = new bool[4];
+	directions_con[0] = true; directions_con[1] = true; directions_con[2] = true; directions_con[3] = true;
 
 	while (true) {
 		game.setCursorPosition(6, 0);
@@ -596,8 +598,7 @@ int main()
 			}
 		}
 		else {
-			bool *directions_con = new bool[4];
-			directions_con[0] = true; directions_con[1] = true; directions_con[2] = true; directions_con[3] = true;
+			
 			if (is_prev_success_comp == false) {
 				game.setCursorPosition(0, 16);
 				cout << "                                                                              ";
