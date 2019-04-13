@@ -72,7 +72,7 @@ public:
 				for (int j = -1; j < 2; j++) {
 					if (y1 - k*j > 9 || y1 - k*j < 0 || zones[y1 - k*j][x1 - k*i] == -2) { continue; }
 					zones[y1 - k*j][x1 - k*i] = -1;
-					setCursorPosition(k1 + x1 * 2 - k*2 * i, 3 + y1 - k*j);
+					setCursorPosition(k1 + x1 * 2 - k*2 * i, 4 + y1 - k*j);
 					cout << "o ";
 				}
 			}	
@@ -85,7 +85,7 @@ public:
 				for (int j = -1; j < 2; j++) {
 					if (x1 - k * j > 9 || x1 - k * j < 0 || zones[y1 - k * i][x1 - k * j] == -2) { continue; }
 					zones[y1 - k * i][x1 - k * j] = -1;
-					setCursorPosition(k1 + x1 * 2 - 2 * k*j, 3 + y1 - k * i);
+					setCursorPosition(k1 + x1 * 2 - 2 * k*j, 4 + y1 - k * i);
 					cout << "o ";
 				}
 			}
@@ -566,12 +566,12 @@ int main()
 
 	system("cls");
 
-	cout << endl; //отступ от границы сверху
+	cout << endl << endl; //отступ от границы сверху
 	for (int i = 0; i < 12; i++) {
 		cout << "        "; //отступ от границы слева 
 		game.print_gamezone(player1.zones, alphabet, i, false);
 		cout << "           ";
-		game.print_gamezone(player0.zones, alphabet, i, false);
+		game.print_gamezone(player0.zones, alphabet, i, true);
 		cout << endl;
 	}
 	cout << endl << endl << endl; //отступ снизу
@@ -606,14 +606,14 @@ int main()
 		cout << count_of_moves << "   ";
 		if (sequence == 1) {
 			if (is_prev_success == true) {
-				game.setCursorPosition(43, 16);
-				cout << "  ";
-				game.setCursorPosition(43, 16);
+				game.setCursorPosition(43, 17);
+				cout << "   ";
+				game.setCursorPosition(43, 17);
 			}
 			else {
-				game.setCursorPosition(0, 16);
+				game.setCursorPosition(0, 17);
 				cout << "                                                                       ";
-				game.setCursorPosition(0, 16);
+				game.setCursorPosition(0, 17);
 				cout << "    Ваш ход. Введите координаты для атаки: ";
 			}
 
@@ -622,7 +622,7 @@ int main()
 
 			if (player0.zones[number - 1][number_letter] == 1 || player0.zones[number - 1][number_letter] == 2
 				|| player0.zones[number - 1][number_letter] == 3 || player0.zones[number - 1][number_letter] == 4) {
-				game.setCursorPosition(47 + number_letter * 2, 2 + number);
+				game.setCursorPosition(47 + number_letter * 2, 3 + number);
 				cout << "x ";
 				player0.zones[number - 1][number_letter] = -2;
 				for (int i = 0; i < 10; i++) {
@@ -630,17 +630,17 @@ int main()
 						player0.ships0[i].health_bar -= 1;
 						if (player0.ships0[i].is_dead() == true) {
 							player0.ships0[i].death(player0.zones,47);
-							game.setCursorPosition(47, 14);
+							game.setCursorPosition(47, 15);
 							cout << "Корабль затоплен!";
 							Sleep(2500);
-							game.setCursorPosition(45, 14);
+							game.setCursorPosition(45, 15);
 							cout << "                            ";
 						}
 						else {
-							game.setCursorPosition(47, 14);
+							game.setCursorPosition(47, 15);
 							cout << "Есть пробитие!";
 							Sleep(1500);
-							game.setCursorPosition(45, 14);
+							game.setCursorPosition(45, 15);
 							cout << "                            ";
 						}
 						break;
@@ -650,14 +650,18 @@ int main()
 				is_prev_success = true;
 
 			}
+			
 			else {
-				game.setCursorPosition(47 + number_letter * 2, 2 + number);
-				cout << "o ";
+				if (player0.zones[number - 1][number_letter] == 0) {
+					game.setCursorPosition(47 + number_letter * 2, 3 + number);
+					cout << "o ";
+				}
+				
 
-				game.setCursorPosition(50, 14);
+				game.setCursorPosition(50, 15);
 				cout << "   Промах!";
 				Sleep(2000);
-				game.setCursorPosition(45, 14);
+				game.setCursorPosition(45, 15);
 				cout << "                            ";
 				
 				sequence = 0;
@@ -666,15 +670,13 @@ int main()
 		}
 		else {
 			if (is_prev_success_comp == false) {
-				game.setCursorPosition(0, 16);
+				game.setCursorPosition(0, 17);
 				cout << "                                                                              ";
-				game.setCursorPosition(0, 16);
+				game.setCursorPosition(0, 17);
 				cout << "    Ход противника. Дождитесь окончания.";
 				int cheat = 0;
 				cheat = rand() % 5;
 				while (true) {
-					
-					
 					x = rand() % 10;
 					y = rand() % 10;
 
@@ -686,11 +688,11 @@ int main()
 					}
 					else {
 						if (player1.zones[y][x] == 1 || player1.zones[y][x] == 2 || player1.zones[y][x] == 3 || player1.zones[y][x] == 4) {
-							game.setCursorPosition(12 + x * 2, 3 + y);
+							game.setCursorPosition(12 + x * 2, 4 + y);
 							Sleep(1000);
 							cout << "x ";
+							game.setCursorPosition(12 + x * 2, 4 + y);
 							player1.zones[y][x] = -2;
-							game.setCursorPosition(12 + x * 2, 3 + y);
 							Sleep(1500);
 
 							for (int i = 0; i < 10; i++) {
@@ -699,20 +701,20 @@ int main()
 									if (player1.player1_ships[i].is_dead() == true) {
 										player1.player1_ships[i].death(player1.zones,12);
 										is_prev_success_comp = false;
-										game.setCursorPosition(11, 14);
+										game.setCursorPosition(11, 15);
 										cout << "Корабль затоплен!";
 										Sleep(2500);
-										game.setCursorPosition(11, 14);
+										game.setCursorPosition(11, 15);
 										cout << "                            ";
 									}
 									else {
 										x_supreme = x;
 										y_supreme = y;
 										count_of_hits += 1;
-										game.setCursorPosition(11, 14);
+										game.setCursorPosition(11, 15);
 										cout << "Есть пробитие!";
 										Sleep(1500);
-										game.setCursorPosition(11, 14);
+										game.setCursorPosition(11, 15);
 										cout << "                            ";
 										current_ship = &player1.player1_ships[i];
 										is_prev_success_comp = true;
@@ -725,15 +727,15 @@ int main()
 
 						else {
 							player1.zones[y][x] = -1;
-							game.setCursorPosition(12 + x * 2, 3 + y);
+							game.setCursorPosition(12 + x * 2, 4 + y);
 							Sleep(1500);
 
-							game.setCursorPosition(12 + x * 2, 3 + y);
+							game.setCursorPosition(12 + x * 2, 4 + y);
 							cout << "о";
-							game.setCursorPosition(15, 14);
+							game.setCursorPosition(15, 15);
 							cout << "Промах!";
 							Sleep(1500);
-							game.setCursorPosition(15, 14);
+							game.setCursorPosition(15, 15);
 							cout << "                            ";
 							sequence = 1;
 							is_prev_success_comp = false;
@@ -785,11 +787,11 @@ int main()
 				}
 
 				if (player1.zones[y1][x1] == 1 || player1.zones[y1][x1] == 2 || player1.zones[y1][x1] == 3 || player1.zones[y1][x1] == 4) {
-					game.setCursorPosition(12 + x1 * 2, 3 + y1);
+					game.setCursorPosition(12 + x1 * 2, 4 + y1);
 					Sleep(1000);
 					cout << "x ";
-					game.setCursorPosition(12 + x1 * 2, 3 + y1);
-					Sleep(2000);
+					game.setCursorPosition(12 + x1 * 2, 4 + y1);
+					Sleep(1500);
 
 					player1.zones[y1][x1] = -2;
 					x = x1;
@@ -818,17 +820,17 @@ int main()
 						x_supreme = 0;
 						y_supreme = 0;
 
-						game.setCursorPosition(11, 14);
+						game.setCursorPosition(11, 15);
 						cout << "Корабль затоплен!";
 						Sleep(2500);
-						game.setCursorPosition(11, 14);
+						game.setCursorPosition(11, 15);
 						cout << "                            ";
 					}
 					else {
-						game.setCursorPosition(11, 14);
+						game.setCursorPosition(11, 15);
 						cout << "Есть пробитие!";
 						Sleep(1500);
-						game.setCursorPosition(11, 14);
+						game.setCursorPosition(11, 15);
 						cout << "                            ";
 						is_prev_success_comp = true;
 					}
@@ -845,17 +847,26 @@ int main()
 					x = x_supreme;
 					y = y_supreme;
 					player1.zones[y1][x1] = -1;
-					game.setCursorPosition(12 + x1 * 2, 3 + y1);
+					game.setCursorPosition(12 + x1 * 2, 4 + y1);
 					Sleep(1500);
 
-					game.setCursorPosition(12 + x1 * 2, 3 + y1);
+					game.setCursorPosition(12 + x1 * 2, 4 + y1);
 					cout << "о";
-					game.setCursorPosition(15, 14);
+					game.setCursorPosition(15, 15);
 					cout << "Промах!";
 					Sleep(2000);
-					game.setCursorPosition(15, 14);
+					game.setCursorPosition(15, 15);
 					cout << "                            ";
 					sequence = 1;
+				}
+				if (((x1 + 1 > 9) && (enter == 3)) || ((x1 - 1 < 0) && (enter == 2))
+					|| ((y1 - 1 < 0) && (enter == 0)) || ((y1 + 1 > 9) && (enter == 1))) {
+					x = x_supreme;
+					y = y_supreme;
+					if (enter == 0) { enter = 1; }
+					else if (enter == 1) { enter = 0; }
+					if (enter == 3) { enter = 2; }
+					else if (enter == 2) { enter = 3; }
 				}
 			}
 		}
