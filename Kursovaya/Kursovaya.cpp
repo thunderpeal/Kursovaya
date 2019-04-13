@@ -10,6 +10,35 @@ using namespace std;
 #define DOWN_ARROW 80
 #define RIGHT_ARROW 77
 const char alphabet[10] = { 'A','B','C','D','E','F','G','H','I','J' };
+const int NotUsed = system("color 3F");
+enum ConsoleColor
+{
+	Black = 0,
+	Blue = 1,
+	Green = 2,
+	Cyan = 3,
+	Red = 4,
+	Magenta = 5,
+	Brown = 6,
+	LightGray = 7,
+	DarkGray = 8,
+	LightBlue = 9,
+	LightGreen = 10,
+	LightCyan = 11,
+	LightRed = 12,
+	LightMagenta = 13,
+	Yellow = 14,
+	White = 15
+};
+
+/*0 = Black 8 = Gray
+1 = Blue 9 = Light Blue
+2 = Green A = Light Green
+3 = Aqua B = Light Aqua
+4 = Red C = Light Red
+5 = Purple D = Light Purple
+6 = Yellow E = Light Yellow
+7 = White F = Bright White*/
 
 class Ships{
 public:
@@ -95,6 +124,18 @@ public:
 
 class Game {
 public:
+	void SetColor(int text, int background)
+	{
+		HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+		SetConsoleTextAttribute(hStdOut, (WORD)((background << 4) | text));
+	}
+
+	void SetColor(int text, ConsoleColor background)
+	{
+		HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+		SetConsoleTextAttribute(hStdOut, (WORD)((background << 4) | text));
+	}
+
 	int **zones = new int*[10];
 
 	void set_0(int**&a) {
@@ -622,8 +663,10 @@ int main()
 
 			if (player0.zones[number - 1][number_letter] == 1 || player0.zones[number - 1][number_letter] == 2
 				|| player0.zones[number - 1][number_letter] == 3 || player0.zones[number - 1][number_letter] == 4) {
+				game.SetColor(LightRed,Cyan);
 				game.setCursorPosition(47 + number_letter * 2, 3 + number);
 				cout << "x ";
+				game.SetColor(White, Cyan);
 				player0.zones[number - 1][number_letter] = -2;
 				for (int i = 0; i < 10; i++) {
 					if (player0.ships0[i].is_it(number_letter, number-1) == true) {
@@ -690,7 +733,9 @@ int main()
 						if (player1.zones[y][x] == 1 || player1.zones[y][x] == 2 || player1.zones[y][x] == 3 || player1.zones[y][x] == 4) {
 							game.setCursorPosition(12 + x * 2, 4 + y);
 							Sleep(1000);
+							game.SetColor(LightRed, Cyan);
 							cout << "x ";
+							game.SetColor(White, Cyan);
 							game.setCursorPosition(12 + x * 2, 4 + y);
 							player1.zones[y][x] = -2;
 							Sleep(1500);
@@ -789,10 +834,11 @@ int main()
 				if (player1.zones[y1][x1] == 1 || player1.zones[y1][x1] == 2 || player1.zones[y1][x1] == 3 || player1.zones[y1][x1] == 4) {
 					game.setCursorPosition(12 + x1 * 2, 4 + y1);
 					Sleep(1000);
+					game.SetColor(LightRed, Cyan);
 					cout << "x ";
 					game.setCursorPosition(12 + x1 * 2, 4 + y1);
 					Sleep(1500);
-
+					game.SetColor(White, Cyan);
 					player1.zones[y1][x1] = -2;
 					x = x1;
 					y = y1;
