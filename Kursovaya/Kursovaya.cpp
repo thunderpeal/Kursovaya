@@ -102,7 +102,9 @@ public:
 					if (y1 - k*j > 9 || y1 - k*j < 0 || zones[y1 - k*j][x1 - k*i] == -2) { continue; }
 					zones[y1 - k*j][x1 - k*i] = -1;
 					setCursorPosition(k1 + x1 * 2 - k*2 * i, 4 + y1 - k*j);
+					
 					cout << "o ";
+
 				}
 			}	
 		}
@@ -432,6 +434,10 @@ public:
 			}
 
 			else { ships[ship_count] -= 1; }
+			if (ship_length == 1) {
+				a[check].set(number_letter, number, number_letter, number - ship_length + 1, ship_length);
+				check += 1;
+			}
 			array[number][number_letter] = ship_length; //закидываем в массив нашего поля голову корабля
 			setCursorPosition(28 + number_letter * 2, 3 + number); //*2 учитывает пробелы в выводимом массиве
 			cout << array[number][number_letter];
@@ -612,7 +618,7 @@ int main()
 		cout << "        "; //отступ от границы слева 
 		game.print_gamezone(player1.zones, alphabet, i, false);
 		cout << "           ";
-		game.print_gamezone(player0.zones, alphabet, i, true);
+		game.print_gamezone(player0.zones, alphabet, i, false);
 		cout << endl;
 	}
 	cout << endl << endl << endl; //отступ снизу
@@ -663,7 +669,7 @@ int main()
 
 			if (player0.zones[number - 1][number_letter] == 1 || player0.zones[number - 1][number_letter] == 2
 				|| player0.zones[number - 1][number_letter] == 3 || player0.zones[number - 1][number_letter] == 4) {
-				game.SetColor(LightRed,Cyan);
+				game.SetColor(Red,Cyan);
 				game.setCursorPosition(47 + number_letter * 2, 3 + number);
 				cout << "x ";
 				game.SetColor(White, Cyan);
@@ -697,7 +703,9 @@ int main()
 			else {
 				if (player0.zones[number - 1][number_letter] == 0) {
 					game.setCursorPosition(47 + number_letter * 2, 3 + number);
+					game.SetColor(LightGray, Cyan);
 					cout << "o ";
+					game.SetColor(White, Cyan);
 				}
 				
 
@@ -776,7 +784,9 @@ int main()
 							Sleep(1500);
 
 							game.setCursorPosition(12 + x * 2, 4 + y);
+							game.SetColor(LightGray, Cyan);
 							cout << "о";
+							game.SetColor(White, Cyan);
 							game.setCursorPosition(15, 15);
 							cout << "Промах!";
 							Sleep(1500);
@@ -897,7 +907,9 @@ int main()
 					Sleep(1500);
 
 					game.setCursorPosition(12 + x1 * 2, 4 + y1);
+					game.SetColor(LightGray, Cyan);
 					cout << "о";
+					game.SetColor(White, Cyan);
 					game.setCursorPosition(15, 15);
 					cout << "Промах!";
 					Sleep(2000);
