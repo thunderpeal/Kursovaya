@@ -63,7 +63,7 @@ public:
 		}
 	}
 
-	void death(int** zones) {
+	void death(int** zones, int k1) { //для бота 12
 		if (horizontal_orientation == true) {
 			int k = -1;
 			if (direction == 2) {  k = 1; }
@@ -72,7 +72,7 @@ public:
 				for (int j = -1; j < 2; j++) {
 					if (y1 - k*j > 9 || y1 - k*j < 0 || zones[y1 - k*j][x1 - k*i] == -2) { continue; }
 					zones[y1 - k*j][x1 - k*i] = -1;
-					setCursorPosition(12 + x1 * 2 - k*2 * i, 3 + y1 - k*j);
+					setCursorPosition(k1 + x1 * 2 - k*2 * i, 3 + y1 - k*j);
 					cout << "o ";
 				}
 			}	
@@ -85,7 +85,7 @@ public:
 				for (int j = -1; j < 2; j++) {
 					if (x1 - k * j > 9 || x1 - k * j < 0 || zones[y1 - k * i][x1 - k * j] == -2) { continue; }
 					zones[y1 - k * i][x1 - k * j] = -1;
-					setCursorPosition(12 + x1 * 2 - 2 * k*j, 3 + y1 - k * i);
+					setCursorPosition(k1 + x1 * 2 - 2 * k*j, 3 + y1 - k * i);
 					cout << "o ";
 				}
 			}
@@ -95,7 +95,6 @@ public:
 
 class Game {
 public:
-	int ships[4] = { 4,6,6,4 };
 	int **zones = new int*[10];
 
 	void set_0(int**&a) {
@@ -553,7 +552,7 @@ public:
 };
 
 class Battle: public Game {
-
+	
 };
 
 int main()
@@ -607,13 +606,13 @@ int main()
 		cout << count_of_moves << "   ";
 		if (sequence == 1) {
 			if (is_prev_success == true) {
-				game.setCursorPosition(41, 16);
+				game.setCursorPosition(43, 16);
 				cout << "  ";
-				game.setCursorPosition(41, 16);
+				game.setCursorPosition(43, 16);
 			}
 			else {
 				game.setCursorPosition(0, 16);
-				cout << "                                                      ";
+				cout << "                                                                       ";
 				game.setCursorPosition(0, 16);
 				cout << "    Ваш ход. Введите координаты для атаки: ";
 			}
@@ -625,30 +624,28 @@ int main()
 				|| player0.zones[number - 1][number_letter] == 3 || player0.zones[number - 1][number_letter] == 4) {
 				game.setCursorPosition(47 + number_letter * 2, 2 + number);
 				cout << "x ";
-
-				switch (player0.zones[number - 1][number_letter]) {
-				case 1:
-					player0.ships[3] -= 1;
-					break;
-				case 2:
-					player0.ships[2] -= 1;
-					break;
-				case 3:
-					player0.ships[1] -= 1;
-					break;
-				case 4:
-					player0.ships[0] -= 1;
-					break;
-				}
-
-				game.setCursorPosition(50, 14);
-				cout << "Есть пробитие!";
-				Sleep(1500);
-				game.setCursorPosition(45, 14);
-				cout << "                            ";
-
 				player0.zones[number - 1][number_letter] = -2;
-
+				for (int i = 0; i < 10; i++) {
+					if (player0.ships0[i].is_it(number_letter, number-1) == true) {
+						player0.ships0[i].health_bar -= 1;
+						if (player0.ships0[i].is_dead() == true) {
+							player0.ships0[i].death(player0.zones,47);
+							game.setCursorPosition(47, 14);
+							cout << "Корабль затоплен!";
+							Sleep(2500);
+							game.setCursorPosition(45, 14);
+							cout << "                            ";
+						}
+						else {
+							game.setCursorPosition(47, 14);
+							cout << "Есть пробитие!";
+							Sleep(1500);
+							game.setCursorPosition(45, 14);
+							cout << "                            ";
+						}
+						break;
+					}
+				}
 				sequence = 1;
 				is_prev_success = true;
 
@@ -662,7 +659,7 @@ int main()
 				Sleep(2000);
 				game.setCursorPosition(45, 14);
 				cout << "                            ";
-
+				
 				sequence = 0;
 				is_prev_success = false;
 			}
@@ -673,9 +670,17 @@ int main()
 				cout << "                                                                              ";
 				game.setCursorPosition(0, 16);
 				cout << "    Ход противника. Дождитесь окончания.";
-				while (true) {		
+				int cheat = 0;
+				cheat = rand() % 5;
+				while (true) {
+					
+					
 					x = rand() % 10;
 					y = rand() % 10;
+
+					/*if (cheat == 2 && player1.zones[y][x] == 0) {
+						continue;
+					}*/
 					if (player1.zones[y][x] == -2 || player1.zones[y][x] == -1 || player1.zones[y][x] == 0) {
 						continue;
 					}
@@ -684,17 +689,15 @@ int main()
 							game.setCursorPosition(12 + x * 2, 3 + y);
 							Sleep(1000);
 							cout << "x ";
+							player1.zones[y][x] = -2;
 							game.setCursorPosition(12 + x * 2, 3 + y);
-							Sleep(2000);
+							Sleep(1500);
 
-							game.setCursorPosition(0, 18);
-							cout << x << y;
-							system("pause");
 							for (int i = 0; i < 10; i++) {
 								if (player1.player1_ships[i].is_it(x,y) == true) {
 									player1.player1_ships[i].health_bar -= 1;
 									if (player1.player1_ships[i].is_dead() == true) {
-										player1.player1_ships[i].death(player1.zones);
+										player1.player1_ships[i].death(player1.zones,12);
 										is_prev_success_comp = false;
 										game.setCursorPosition(11, 14);
 										cout << "Корабль затоплен!";
@@ -717,9 +720,7 @@ int main()
 									break;
 								}
 							}
-							player1.zones[y][x] = -2;
 							sequence = 0;
-							
 						}
 
 						else {
@@ -731,7 +732,7 @@ int main()
 							cout << "о";
 							game.setCursorPosition(15, 14);
 							cout << "Промах!";
-							Sleep(2000);
+							Sleep(1500);
 							game.setCursorPosition(15, 14);
 							cout << "                            ";
 							sequence = 1;
@@ -781,7 +782,6 @@ int main()
 					x1 = x + 1;
 					y1 = y;
 					break;
-
 				}
 
 				if (player1.zones[y1][x1] == 1 || player1.zones[y1][x1] == 2 || player1.zones[y1][x1] == 3 || player1.zones[y1][x1] == 4) {
@@ -791,14 +791,9 @@ int main()
 					game.setCursorPosition(12 + x1 * 2, 3 + y1);
 					Sleep(2000);
 
-					game.setCursorPosition(0, 18);
-					cout << directions_con[0] << directions_con[1] << directions_con[2] << directions_con[3];
-
-
 					player1.zones[y1][x1] = -2;
 					x = x1;
 					y = y1;
-
 					count_of_hits += 1;
 					if (count_of_hits >= 2) {
 						if (enter == 0 || enter == 1) {
@@ -813,7 +808,7 @@ int main()
 
 					current_ship->health_bar -= 1;
 					if (current_ship->is_dead() == true) {
-						current_ship->death(player1.zones);
+						current_ship->death(player1.zones,12);
 						is_prev_success_comp = false;
 						directions_con[0] = true; directions_con[1] = true; directions_con[2] = true; directions_con[3] = true;
 						current_ship = 0;
@@ -861,7 +856,6 @@ int main()
 					game.setCursorPosition(15, 14);
 					cout << "                            ";
 					sequence = 1;
-				
 				}
 			}
 		}
