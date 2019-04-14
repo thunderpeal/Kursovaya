@@ -92,7 +92,7 @@ public:
 		}
 	}
 
-	void death(int** zones, int k1) { //для бота 12
+	void death( int (&zones)[10][10], int k1) { //для бота 12
 		if (horizontal_orientation == true) {
 			int k = -1;
 			if (direction == 2) {  k = 1; }
@@ -126,24 +126,11 @@ public:
 
 class Game {
 public:
-	void SetColor(int text, int background)
-	{
-		HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-		SetConsoleTextAttribute(hStdOut, (WORD)((background << 4) | text));
-	}
+	int zones[10][10];
 
-	void SetColor(int text, ConsoleColor background)
-	{
-		HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-		SetConsoleTextAttribute(hStdOut, (WORD)((background << 4) | text));
-	}
-
-	int **zones = new int*[10];
-
-	void set_0(int**&a) {
+	void set_0(int (&a)[10][10]) {
 		for (int i = 0; i < 10; i++) {
-			zones[i] = new int[10];
-			for (int j = 0; j < 10; j++) { zones[i][j] = 0; }
+			for (int j = 0; j < 10; j++) { a[i][j] = 0; }
 		}
 	}
 
@@ -155,7 +142,7 @@ public:
 		SetConsoleCursorPosition(hOut, coord);
 	}
 
-	void print_gamezone(int ** &array, const char alphabet[10], int i, bool costil) {
+	void print_gamezone(int (&array)[10][10], const char alphabet[10], int i, bool costil) {
 		for (int j = 0; j < 12; j++) {
 			if (i == 0 && j >= 2) { cout << alphabet[j - 2] << " "; }
 			else if (i == 1) { break; }
@@ -202,10 +189,6 @@ public:
 		}
 	}
 
-	void delete_dynamics() {
-
-	}
-
 	bool is_dead(Ships *a) {
 		bool death = true;
 		for (int i = 0; i < 10; i++) {
@@ -220,7 +203,7 @@ public:
 		}
 	}
 
-	void auto_arrangement(int **&array, const char alphabet[10], Ships *a) {
+	void auto_arrangement(int(&array)[10][10], const char alphabet[10], Ships *a) {
 		int ships[4] = { 1, 2, 3, 4 };
 		int ship_count = 0;
 		int check = 0;
@@ -303,7 +286,7 @@ public:
 		}
 	}
 
-	void ship_location_checker(int **& array, bool dir[4], bool* c_b_p, int x, int y, int ship_length) {
+	void ship_location_checker(int (&array)[10][10], bool dir[4], bool* c_b_p, int x, int y, int ship_length) {
 		for (int i = -1; i < 2; i++) {
 			for (int j = -1; j < 2; j++) {
 				if (x + j >= 10 || x + j < 0 || y + i >= 10 || y + i < 0) { //проверяет все клетки вокруг случайно 
@@ -368,7 +351,7 @@ public:
 		arrangement(zones, alphabet, player1_ships);
 	}
 
-	void player_arrangement_type(int **&array, const char alphabet[10], Ships *a) {
+	void player_arrangement_type(int (&array)[10][10], const char alphabet[10], Ships *a) {
 		int ships[4] = { 1, 2, 3, 4 };
 		int ship_length = 0;
 		int ship_count = 0;
@@ -538,7 +521,7 @@ public:
 		}
 	}
 
-	void arrangement(int **& zones, const char alphabet[10],  Ships *player1_ships) {
+	void arrangement(int (&zones)[10][10], const char alphabet[10],  Ships *player1_ships) {
 		int answer = 0;
 		int answer_1 = 0;
 		while (true) {
@@ -602,17 +585,76 @@ class Battle: public Game {
 	
 };
 
+class Decor {
+public:
+	void SetColor(int text, int background)
+	{
+		HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+		SetConsoleTextAttribute(hStdOut, (WORD)((background << 4) | text));
+	}
+
+	void SetColor(int text, ConsoleColor background)
+	{
+		HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+		SetConsoleTextAttribute(hStdOut, (WORD)((background << 4) | text));
+	}
+
+	void a() {
+		SetColor(LightRed, Red);
+		cout << "||";
+	}
+	void a1() {
+		SetColor(LightRed, Red);
+		cout << "|||";
+	}
+	void b() {
+		SetColor(White, Cyan);
+		cout << " ";
+	}
+	void c() {
+		a(); b(); b();
+	}
+	void SeaBattle() {
+		cout << endl << endl << endl;  b(); cout << "        ";
+		b(); cout << "                                                  "; a(); cout << endl;; b(); cout << "        ";
+		c(); b(); c(); b(); a(); c(); b(); a();  SetColor(Red, Red); cout << "|";
+		c(); b(); b(); a(); c(); b(); c(); c(); b(); a(); c(); b(); c(); a(); cout << endl; b(); cout << "        ";
+		a1(); b(); a1(); b(); b(); c(); c(); c();    c(); c(); c(); a(); b(); c(); b(); c(); c(); c(); a(); cout << endl;
+		b(); cout << "        ";
+		a(); b(); SetColor(Red, Red); cout << "|"; b(); c(); c(); c(); a(); a(); c(); c(); b(); b(); b(); b(); a(); c();
+		b(); b(); c(); c(); a(); b(); a1(); cout << endl;; b(); cout << "        ";
+		c(); b(); c(); c(); c(); c();  b(); b(); b(); b(); c(); c(); a(); b(); c(); b(); c(); c(); a1(); b(); a();
+		cout << endl; b(); cout << "        ";
+		c(); b(); c(); b(); a(); c(); b(); c(); b(); b(); b(); b(); b(); a(); c(); b(); c(); c(); b(); a(); c();
+		b(); c(); a(); b();
+		cout << endl << endl ; b(); cout << "                         ";
+
+		b(); cout << "                 "; a(); cout << endl; b(); cout << "                         ";
+		a1(); c(); b(); b(); a(); c(); b(); c(); a(); cout << endl; b(); cout << "                         ";
+		c(); b(); b(); b(); b(); c(); c(); c(); a(); cout << endl; b(); cout << "                         ";
+		a1(); c(); b(); c(); c(); a(); b(); a1(); cout << endl; b(); cout << "                         ";
+		c(); c(); c(); c(); a1(); b(); a(); cout << endl; b(); cout << "                         ";
+		a1(); c(); b(); b(); a(); c(); b(); c(); a(); b(); cout << endl << endl<<endl; cout << "                 ";
+		system("pause");
+	}
+
+
+};
+
+
 int main()
 {
 	srand(time(NULL));
 	setlocale(LC_ALL, "Russian");
-	
+	Decor decor;
+	decor.SeaBattle();
+	system("cls");
+
 	Game game;
 	Computer player0;
 	Player player1;
-
 	system("cls");
-
+	
 	cout << endl << endl; //отступ от границы сверху
 	for (int i = 0; i < 12; i++) {
 		cout << "        "; //отступ от границы слева 
@@ -669,10 +711,10 @@ int main()
 
 			if (player0.zones[number - 1][number_letter] == 1 || player0.zones[number - 1][number_letter] == 2
 				|| player0.zones[number - 1][number_letter] == 3 || player0.zones[number - 1][number_letter] == 4) {
-				game.SetColor(Red,Cyan);
+				decor.SetColor(Red,Cyan);
 				game.setCursorPosition(47 + number_letter * 2, 3 + number);
 				cout << "x ";
-				game.SetColor(White, Cyan);
+				decor.SetColor(White, Cyan);
 				player0.zones[number - 1][number_letter] = -2;
 				for (int i = 0; i < 10; i++) {
 					if (player0.ships0[i].is_it(number_letter, number-1) == true) {
@@ -703,9 +745,9 @@ int main()
 			else {
 				if (player0.zones[number - 1][number_letter] == 0) {
 					game.setCursorPosition(47 + number_letter * 2, 3 + number);
-					game.SetColor(LightGray, Cyan);
+					decor.SetColor(LightGray, Cyan);
 					cout << "o ";
-					game.SetColor(White, Cyan);
+					decor.SetColor(White, Cyan);
 				}
 				
 
@@ -741,9 +783,9 @@ int main()
 						if (player1.zones[y][x] == 1 || player1.zones[y][x] == 2 || player1.zones[y][x] == 3 || player1.zones[y][x] == 4) {
 							game.setCursorPosition(12 + x * 2, 4 + y);
 							Sleep(1000);
-							game.SetColor(LightRed, Cyan);
+							decor.SetColor(LightRed, Cyan);
 							cout << "x ";
-							game.SetColor(White, Cyan);
+							decor.SetColor(White, Cyan);
 							game.setCursorPosition(12 + x * 2, 4 + y);
 							player1.zones[y][x] = -2;
 							Sleep(1500);
@@ -784,9 +826,9 @@ int main()
 							Sleep(1500);
 
 							game.setCursorPosition(12 + x * 2, 4 + y);
-							game.SetColor(LightGray, Cyan);
+							decor.SetColor(LightGray, Cyan);
 							cout << "о";
-							game.SetColor(White, Cyan);
+							decor.SetColor(White, Cyan);
 							game.setCursorPosition(15, 15);
 							cout << "Промах!";
 							Sleep(1500);
@@ -844,11 +886,11 @@ int main()
 				if (player1.zones[y1][x1] == 1 || player1.zones[y1][x1] == 2 || player1.zones[y1][x1] == 3 || player1.zones[y1][x1] == 4) {
 					game.setCursorPosition(12 + x1 * 2, 4 + y1);
 					Sleep(1000);
-					game.SetColor(LightRed, Cyan);
+					decor.SetColor(LightRed, Cyan);
 					cout << "x ";
 					game.setCursorPosition(12 + x1 * 2, 4 + y1);
 					Sleep(1500);
-					game.SetColor(White, Cyan);
+					decor.SetColor(White, Cyan);
 					player1.zones[y1][x1] = -2;
 					x = x1;
 					y = y1;
@@ -907,9 +949,9 @@ int main()
 					Sleep(1500);
 
 					game.setCursorPosition(12 + x1 * 2, 4 + y1);
-					game.SetColor(LightGray, Cyan);
+					decor.SetColor(LightGray, Cyan);
 					cout << "о";
-					game.SetColor(White, Cyan);
+					decor.SetColor(White, Cyan);
 					game.setCursorPosition(15, 15);
 					cout << "Промах!";
 					Sleep(2000);
