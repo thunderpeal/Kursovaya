@@ -734,12 +734,12 @@ public:
 		}
 		if (*is_prev_success_comp == false) {
 			int cheat = 0;
-			cheat = rand() % 7;
+			cheat = rand() % 10;
 			while (true) {
 				*x = rand() % 10;
 				*y = rand() % 10;
 
-				if (cheat == 2 && zones[*y][*x] == 0) {
+				if (cheat == 5 && zones[*y][*x] == 0) {
 					continue;
 				}
 				if (zones[*y][*x] == -2 || zones[*y][*x] == -1 // || zones[*y][*x] == 0
