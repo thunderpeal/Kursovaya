@@ -31,6 +31,13 @@ enum ConsoleColor
 	White = 15
 };
 
+void setCursorPosition(int x, int y)
+{
+	static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	std::cout.flush();
+	COORD coord = { (SHORT)x, (SHORT)y };
+	SetConsoleCursorPosition(hOut, coord);
+}
 /*0 = Black 8 = Gray
 1 = Blue 9 = Light Blue
 2 = Green A = Light Green
@@ -42,13 +49,6 @@ enum ConsoleColor
 
 class Ships{
 public:
-	void setCursorPosition(int x, int y)
-	{
-		static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-		std::cout.flush();
-		COORD coord = { (SHORT)x, (SHORT)y };
-		SetConsoleCursorPosition(hOut, coord);
-	}
 	int x1, y1, x2, y2;
 	int length;
 	bool horizontal_orientation;
@@ -134,14 +134,6 @@ public:
 		}
 	}
 
-	void setCursorPosition(int x, int y)
-	{
-		static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-		std::cout.flush();
-		COORD coord = { (SHORT)x, (SHORT)y };
-		SetConsoleCursorPosition(hOut, coord);
-	}
-
 	void print_gamezone(int (&array)[10][10], const char alphabet[10], int i, bool costil) {
 		for (int j = 0; j < 12; j++) {
 			if (i == 0 && j >= 2) { cout << alphabet[j - 2] << " "; }
@@ -172,23 +164,6 @@ public:
 		}
 	}
 
-	void game_beginning_text() {
-		setCursorPosition(0, 16);
-		cout << "    Вы находитесь в режиме боя. Право первого хода определяется жребием." << endl;
-		cout << "    Ваши корабли располагаются на поле слева. Удачи!";
-		Sleep(5000);
-		for (int i = 0; i < 5; i++) {
-			Sleep(250);
-			setCursorPosition(0, 16);
-			cout << "    Вы находитесь в режиме боя. Право первого хода определяется жребием." << endl;
-			cout << "    Ваши корабли располагаются на поле слева. Удачи!";
-			Sleep(250);
-			setCursorPosition(0, 16);
-			cout << "                                                                           " << endl;
-			cout << "                                                                           " << endl;
-		}
-	}
-
 	bool is_dead(Ships *a) {
 		bool death = true;
 		for (int i = 0; i < 10; i++) {
@@ -204,14 +179,14 @@ public:
 	}
 
 	void auto_arrangement(int(&array)[10][10], const char alphabet[10], Ships *a) {
-		int ships[4] = { 1, 2, 3, 4 };
+		int ships_1[4] = { 1, 2, 3, 4 };
 		int ship_count = 0;
 		int check = 0;
 		int ship_length = 0;
 		int x = 0, y = 0;
 
 		while (true) {
-			if (ships[ship_count] == 0) {
+			if (ships_1[ship_count] == 0) {
 				ship_count += 1;
 			}
 			switch (ship_count) {
@@ -241,7 +216,7 @@ public:
 				if (can_be_placed == false) {
 					continue;
 				}
-				ships[ship_count] -= 1;
+				ships_1[ship_count] -= 1;
 				int enter = -1;
 				while (true) { //рандомно выбираем направление из доступных
 					enter = rand() % 4;
@@ -280,7 +255,7 @@ public:
 				check += 1;
 				break;
 			}
-			if (ships[ship_count] == 0 && ship_count == 3) {
+			if (ships_1[ship_count] == 0 && ship_count == 3) {
 				break;
 			}
 		}
@@ -345,14 +320,14 @@ public:
 
 class Player: public Game {
 public:
-	Ships player1_ships[10];
+	Ships ships[10];
 	Player() {
 		set_0(zones);
-		arrangement(zones, alphabet, player1_ships);
+		arrangement(zones, alphabet, ships);
 	}
 
 	void player_arrangement_type(int (&array)[10][10], const char alphabet[10], Ships *a) {
-		int ships[4] = { 1, 2, 3, 4 };
+		int ships_1[4] = { 1, 2, 3, 4 };
 		int ship_length = 0;
 		int ship_count = 0;
 		int number = 0;
@@ -360,19 +335,19 @@ public:
 		char letter;
 		int check = 0;
 
-		cout << endl;
+		cout << endl << endl;
 		for (int i = 0; i < 12; i++) {
 			cout << "                        "; //отступ от границы слева 
 			print_gamezone(array, alphabet, i, false);
 			cout << endl;
 		}
-		cout << endl << endl << endl;
+		cout << endl << endl  ;
 		cout << "     Это режим расстановки ваших кораблей." << endl;
 		cout << "     Введите точку (например, D4), где хотите поставить 'голову' корабля, " << endl;
 		cout << "     а затем укажите стрелочкой направление тела корабля." << endl << endl;
 
 		while (true) {
-			if (ships[ship_count] == 0) {
+			if (ships_1[ship_count] == 0) {
 				ship_count += 1;
 			}
 			setCursorPosition(0, 20);
@@ -403,7 +378,6 @@ public:
 
 			setCursorPosition(0, 21);
 			cout << "                                                                                 ";
-			//setCursorPosition(0, 26);
 			bool can_be_placed = true;
 			bool *directions = new bool[4];
 			directions[0] = true; directions[1] = true; directions[2] = true; directions[3] = true;
@@ -416,13 +390,13 @@ public:
 				continue;
 			}
 
-			else { ships[ship_count] -= 1; }
+			else { ships_1[ship_count] -= 1; }
 			if (ship_length == 1) {
 				a[check].set(number_letter, number, number_letter, number - ship_length + 1, ship_length);
 				check += 1;
 			}
 			array[number][number_letter] = ship_length; //закидываем в массив нашего поля голову корабля
-			setCursorPosition(28 + number_letter * 2, 3 + number); //*2 учитывает пробелы в выводимом массиве
+			setCursorPosition(28 + number_letter * 2, 4 + number); //*2 учитывает пробелы в выводимом массиве
 			cout << array[number][number_letter];
 
 
@@ -446,7 +420,7 @@ public:
 								check += 1;
 								for (int i = 1; i < ship_length; i++) {
 									array[number - i][number_letter] = ship_length;
-									setCursorPosition(28 + number_letter * 2, 3 + number - i);
+									setCursorPosition(28 + number_letter * 2, 4 + number - i);
 									cout << array[number - i][number_letter];
 									exit = true;
 								}
@@ -463,7 +437,7 @@ public:
 								check += 1;
 								for (int i = 1; i < ship_length; i++) {
 									array[number + i][number_letter] = ship_length;
-									setCursorPosition(28 + number_letter * 2, 3 + number + i);
+									setCursorPosition(28 + number_letter * 2, 4 + number + i);
 									cout << array[number + i][number_letter];
 									exit = true;
 								}
@@ -480,7 +454,7 @@ public:
 								check += 1;
 								for (int i = 1; i < ship_length; i++) {
 									array[number][number_letter - i] = ship_length;
-									setCursorPosition(28 + number_letter * 2 - 2 * i, 3 + number);
+									setCursorPosition(28 + number_letter * 2 - 2 * i, 4 + number);
 									cout << array[number][number_letter - i];
 									exit = true;
 								}
@@ -497,7 +471,7 @@ public:
 								check += 1;
 								for (int i = 1; i < ship_length; i++) {
 									array[number][number_letter + i] = ship_length;
-									setCursorPosition(28 + number_letter * 2 + 2 * i, 3 + number);
+									setCursorPosition(28 + number_letter * 2 + 2 * i, 4 + number);
 									cout << array[number][number_letter + i];
 									exit = true;
 								}
@@ -517,7 +491,7 @@ public:
 				setCursorPosition(0, 21);
 				cout << "                                                                                         ";
 			}
-			if (ships[ship_count] == 0 && ship_count == 3) { break; }
+			if (ships_1[ship_count] == 0 && ship_count == 3) { break; }
 		}
 	}
 
@@ -525,14 +499,15 @@ public:
 		int answer = 0;
 		int answer_1 = 0;
 		while (true) {
-			setCursorPosition(0, 2);
-			cout << "     Расставить корабли самостоятельно" << endl << "     или использовать автоматическую расстановку?(1/0) ";
+			setCursorPosition(0, 7);
+			cout << "                Желаете расставить корабли самостоятельно" << endl<<
+				endl << "             или использовать автоматическую расстановку?(1/0) ";
 			cin >> answer;
 			system("cls");
 			if (answer == 1) {
 				player_arrangement_type(zones, alphabet, player1_ships);
-				setCursorPosition(0, 22);
-				cout << "      Подтвердить установку или повторить с нуля?(1/0) ";
+				setCursorPosition(13, 22);
+				cout << "Подтвердить установку или повторить с нуля?(1/0) ";
 				cin >> answer_1;
 				if (answer_1 == 0) {
 					set_0(zones);
@@ -543,17 +518,17 @@ public:
 			}
 			else {
 				auto_arrangement(zones, alphabet, player1_ships);
-				cout << endl;
+				cout << endl <<endl;
 				for (int i = 0; i < 12; i++) {
 					cout << "                        "; //отступ от границы слева 
 					print_gamezone(zones, alphabet, i, false);
 					cout << endl;
 				}
 
-				setCursorPosition(0, 15);
-				cout << "            Подтвердить установку или повторить с нуля?(1/0) ";
+				setCursorPosition(13, 16);
+				cout << "Подтвердить установку или повторить с нуля?(1/0) ";
 				cin >> answer_1;
-				setCursorPosition(0, 17);
+				setCursorPosition(0, 18);
 
 				if (answer_1 == 0) {
 					set_0(zones);
@@ -561,12 +536,11 @@ public:
 					continue;
 				}
 				else {
-					cout << "        Расстановка окончена! Компьютер также расставил свои корабли." << endl
-						<< "                    Приступим к игре." << endl;
+					cout << "                          Расстановка окончена!";
+					cout<<endl<<"          Компьютер также расставил свои корабли. Приступим к игре." << endl;
 					Sleep(3000);
 					break;
 				}
-
 			}
 		}
 	}
@@ -574,10 +548,10 @@ public:
 
 class Computer : public Game {
 public:
-	Ships ships0[10];
+	Ships ships[10];
 	Computer() {
 		set_0(zones);
-		auto_arrangement(zones, alphabet, ships0);
+		auto_arrangement(zones, alphabet, ships);
 	}
 };
 
@@ -585,7 +559,7 @@ class Battle: public Game {
 	
 };
 
-class Decor {
+class Decor :public Game {
 public:
 	void SetColor(int text, int background)
 	{
@@ -638,7 +612,69 @@ public:
 		system("pause");
 	}
 
+	void game_beginning_text() {
+		setCursorPosition(0, 16);
+		cout << "    Вы находитесь в режиме боя. Право первого хода определяется жребием." << endl;
+		cout << "    Ваши корабли располагаются на поле слева. Удачи!";
+		Sleep(5000);
+		for (int i = 0; i < 5; i++) {
+			Sleep(250);
+			setCursorPosition(0, 16);
+			cout << "    Вы находитесь в режиме боя. Право первого хода определяется жребием." << endl;
+			cout << "    Ваши корабли располагаются на поле слева. Удачи!";
+			Sleep(250);
+			setCursorPosition(0, 16);
+			cout << "                                                                           " << endl;
+			cout << "                                                                           " << endl;
+		}
+	}
 
+	void hit(int x, int y, int x1, int y1, int u) {  //47 или 12 для u
+		setCursorPosition(0, 18);
+		cout << "                                                ";
+		SetColor(LightRed, Cyan);
+		setCursorPosition(u + x * 2, 4 + y);
+		Sleep(1500);
+		cout << "x ";
+		SetColor(White, Cyan);
+
+		setCursorPosition(x1, y1);
+		cout << "Есть пробитие!";
+		Sleep(1500);
+		setCursorPosition(x1-2, y1);
+		cout << "                            ";
+	}
+	void miss(int x, int y, int x1, int y1, int u) {
+		setCursorPosition(0, 18);
+		cout << "                                                ";
+		setCursorPosition(u + x * 2, 4 + y);
+		Sleep(1500);
+		setCursorPosition(u + x * 2, 4 + y);
+		SetColor(LightGray, Cyan);
+		cout << "о";
+		SetColor(White, Cyan);
+
+		setCursorPosition(x1, y1);
+		cout << "Промах!";
+		Sleep(1500);
+		setCursorPosition(x1-2, y1);
+		cout << "                            ";
+	}
+	void kill(int x, int y, int x1, int y1, int u) {
+		setCursorPosition(0, 18);
+		cout << "                                                ";
+		SetColor(LightRed, Cyan);
+		setCursorPosition(u + x * 2, 4 + y);
+		Sleep(1500);
+		cout << "x ";
+		SetColor(White, Cyan);
+
+		setCursorPosition(x1, y1);
+		cout << "Корабль затоплен!";
+		Sleep(2500);
+		setCursorPosition(x1-2, y1);
+		cout << "                            ";
+	}
 };
 
 
@@ -675,10 +711,10 @@ int main()
 
 	bool is_prev_success = false;
 	bool is_prev_success_comp = false;
-
-	game.game_beginning_text();
 	
-	game.setCursorPosition(0, 0);
+	decor.game_beginning_text();
+	
+	setCursorPosition(0, 0);
 	cout << "Ходов " << count_of_moves;
 	int x = 0, y = 0;
 	int y1 = 0, x1 = 0;
@@ -691,18 +727,18 @@ int main()
 	directions_con[0] = true; directions_con[1] = true; directions_con[2] = true; directions_con[3] = true;
 
 	while (true) {
-		game.setCursorPosition(6, 0);
+		setCursorPosition(6, 0);
 		cout << count_of_moves << "   ";
 		if (sequence == 1) {
 			if (is_prev_success == true) {
-				game.setCursorPosition(43, 17);
+				setCursorPosition(43, 17);
 				cout << "   ";
-				game.setCursorPosition(43, 17);
+				setCursorPosition(43, 17);
 			}
 			else {
-				game.setCursorPosition(0, 17);
+				setCursorPosition(0, 17);
 				cout << "                                                                       ";
-				game.setCursorPosition(0, 17);
+				setCursorPosition(0, 17);
 				cout << "    Ваш ход. Введите координаты для атаки: ";
 			}
 
@@ -711,61 +747,40 @@ int main()
 
 			if (player0.zones[number - 1][number_letter] == 1 || player0.zones[number - 1][number_letter] == 2
 				|| player0.zones[number - 1][number_letter] == 3 || player0.zones[number - 1][number_letter] == 4) {
-				decor.SetColor(Red,Cyan);
-				game.setCursorPosition(47 + number_letter * 2, 3 + number);
-				cout << "x ";
-				decor.SetColor(White, Cyan);
 				player0.zones[number - 1][number_letter] = -2;
 				for (int i = 0; i < 10; i++) {
-					if (player0.ships0[i].is_it(number_letter, number-1) == true) {
-						player0.ships0[i].health_bar -= 1;
-						if (player0.ships0[i].is_dead() == true) {
-							player0.ships0[i].death(player0.zones,47);
-							game.setCursorPosition(47, 15);
-							cout << "Корабль затоплен!";
-							Sleep(2500);
-							game.setCursorPosition(45, 15);
-							cout << "                            ";
+					if (player0.ships[i].is_it(number_letter, number-1) == true) {
+						player0.ships[i].health_bar -= 1;
+						if (player0.ships[i].is_dead() == true) {
+							player0.ships[i].death(player0.zones,47);
+							decor.kill(number_letter, number - 1, 47, 15, 47);
 						}
 						else {
-							game.setCursorPosition(47, 15);
-							cout << "Есть пробитие!";
-							Sleep(1500);
-							game.setCursorPosition(45, 15);
-							cout << "                            ";
+							decor.hit(number_letter, number - 1, 47, 15,47);
 						}
 						break;
 					}
 				}
 				sequence = 1;
 				is_prev_success = true;
-
 			}
-			
+			else if (player0.zones[number - 1][number_letter] == -2) {
+				setCursorPosition(0, 18);
+				cout << "    Лежачих не бьют! Попробуйте еще раз. ";
+				sequence = 1;
+				continue;
+			}
 			else {
-				if (player0.zones[number - 1][number_letter] == 0) {
-					game.setCursorPosition(47 + number_letter * 2, 3 + number);
-					decor.SetColor(LightGray, Cyan);
-					cout << "o ";
-					decor.SetColor(White, Cyan);
-				}
-				
-
-				game.setCursorPosition(50, 15);
-				cout << "   Промах!";
-				Sleep(2000);
-				game.setCursorPosition(45, 15);
-				cout << "                            ";
-				
+				decor.miss(number_letter, number - 1, 50, 15, 47);
 				sequence = 0;
 				is_prev_success = false;
 			}
 		}
 		else {
 			if (is_prev_success_comp == false) {
-				game.setCursorPosition(0, 17);
+				setCursorPosition(0, 17);
 				cout << "                                                                              ";
-				game.setCursorPosition(0, 17);
+				setCursorPosition(0, 17);
 				cout << "    Ход противника. Дождитесь окончания.";
 				int cheat = 0;
 				cheat = rand() % 5;
@@ -781,37 +796,22 @@ int main()
 					}
 					else {
 						if (player1.zones[y][x] == 1 || player1.zones[y][x] == 2 || player1.zones[y][x] == 3 || player1.zones[y][x] == 4) {
-							game.setCursorPosition(12 + x * 2, 4 + y);
-							Sleep(1000);
-							decor.SetColor(LightRed, Cyan);
-							cout << "x ";
-							decor.SetColor(White, Cyan);
-							game.setCursorPosition(12 + x * 2, 4 + y);
 							player1.zones[y][x] = -2;
-							Sleep(1500);
 
 							for (int i = 0; i < 10; i++) {
-								if (player1.player1_ships[i].is_it(x,y) == true) {
-									player1.player1_ships[i].health_bar -= 1;
-									if (player1.player1_ships[i].is_dead() == true) {
-										player1.player1_ships[i].death(player1.zones,12);
+								if (player1.ships[i].is_it(x,y) == true) {
+									player1.ships[i].health_bar -= 1;
+									if (player1.ships[i].is_dead() == true) {
+										player1.ships[i].death(player1.zones,12);
 										is_prev_success_comp = false;
-										game.setCursorPosition(11, 15);
-										cout << "Корабль затоплен!";
-										Sleep(2500);
-										game.setCursorPosition(11, 15);
-										cout << "                            ";
+										decor.kill(x,y,11, 15, 12);
 									}
 									else {
 										x_supreme = x;
 										y_supreme = y;
 										count_of_hits += 1;
-										game.setCursorPosition(11, 15);
-										cout << "Есть пробитие!";
-										Sleep(1500);
-										game.setCursorPosition(11, 15);
-										cout << "                            ";
-										current_ship = &player1.player1_ships[i];
+										decor.hit(x,y,11, 15, 12);
+										current_ship = &player1.ships[i];
 										is_prev_success_comp = true;
 									}
 									break;
@@ -822,18 +822,7 @@ int main()
 
 						else {
 							player1.zones[y][x] = -1;
-							game.setCursorPosition(12 + x * 2, 4 + y);
-							Sleep(1500);
-
-							game.setCursorPosition(12 + x * 2, 4 + y);
-							decor.SetColor(LightGray, Cyan);
-							cout << "о";
-							decor.SetColor(White, Cyan);
-							game.setCursorPosition(15, 15);
-							cout << "Промах!";
-							Sleep(1500);
-							game.setCursorPosition(15, 15);
-							cout << "                            ";
+							decor.miss(x, y, 15, 15, 12);
 							sequence = 1;
 							is_prev_success_comp = false;
 						}
@@ -884,13 +873,6 @@ int main()
 				}
 
 				if (player1.zones[y1][x1] == 1 || player1.zones[y1][x1] == 2 || player1.zones[y1][x1] == 3 || player1.zones[y1][x1] == 4) {
-					game.setCursorPosition(12 + x1 * 2, 4 + y1);
-					Sleep(1000);
-					decor.SetColor(LightRed, Cyan);
-					cout << "x ";
-					game.setCursorPosition(12 + x1 * 2, 4 + y1);
-					Sleep(1500);
-					decor.SetColor(White, Cyan);
 					player1.zones[y1][x1] = -2;
 					x = x1;
 					y = y1;
@@ -918,18 +900,10 @@ int main()
 						x_supreme = 0;
 						y_supreme = 0;
 
-						game.setCursorPosition(11, 15);
-						cout << "Корабль затоплен!";
-						Sleep(2500);
-						game.setCursorPosition(11, 15);
-						cout << "                            ";
+						decor.kill(x, y, 11, 15, 12);
 					}
 					else {
-						game.setCursorPosition(11, 15);
-						cout << "Есть пробитие!";
-						Sleep(1500);
-						game.setCursorPosition(11, 15);
-						cout << "                            ";
+						decor.hit(x, y, 11, 15, 12);
 						is_prev_success_comp = true;
 					}
 					sequence = 0;
@@ -945,18 +919,8 @@ int main()
 					x = x_supreme;
 					y = y_supreme;
 					player1.zones[y1][x1] = -1;
-					game.setCursorPosition(12 + x1 * 2, 4 + y1);
-					Sleep(1500);
 
-					game.setCursorPosition(12 + x1 * 2, 4 + y1);
-					decor.SetColor(LightGray, Cyan);
-					cout << "о";
-					decor.SetColor(White, Cyan);
-					game.setCursorPosition(15, 15);
-					cout << "Промах!";
-					Sleep(2000);
-					game.setCursorPosition(15, 15);
-					cout << "                            ";
+					decor.miss(x1, y1, 15, 15, 12);
 					sequence = 1;
 				}
 				if (((x1 + 1 > 9) && (enter == 3)) || ((x1 - 1 < 0) && (enter == 2))
@@ -971,12 +935,12 @@ int main()
 			}
 		}
 
-		if (player0.is_dead(player0.ships0) == true) {
-			game.setCursorPosition(0, 20);
+		if (player0.is_dead(player0.ships) == true) {
+			setCursorPosition(0, 20);
 			cout << "  Вы выиграли! Поздравляем!";
 		}
-		else if (player1.is_dead(player1.player1_ships) == true) {
-			game.setCursorPosition(0, 20);
+		else if (player1.is_dead(player1.ships) == true) {
+			setCursorPosition(0, 20);
 			cout << "  Вы проиграли!";
 		}
 		count_of_moves += 1;
