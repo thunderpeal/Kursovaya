@@ -678,6 +678,7 @@ public:
 
 int main()
 {
+	system("title Морской бой");
 	srand(time(NULL));
 	setlocale(LC_ALL, "Russian");
 	Decor decor;

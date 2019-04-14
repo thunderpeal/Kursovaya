@@ -37,9 +37,6 @@
     <Image Include="..\..\..\Downloads\Icon_2.ico.ico">
       <Filter>Файлы ресурсов</Filter>
     </Image>
-    <Image Include="Icon.ico">
-      <Filter>Файлы ресурсов</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kursovaya.rc">

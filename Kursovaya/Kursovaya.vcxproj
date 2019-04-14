@@ -166,7 +166,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\Downloads\Icon_2.ico.ico" />
-    <Image Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kursovaya.rc" />
