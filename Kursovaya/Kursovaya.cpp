@@ -30,8 +30,6 @@ enum ConsoleColor
 	Yellow = 14,
 	White = 15
 };
-
-
 /*0 = Black 8 = Gray
 1 = Blue 9 = Light Blue
 2 = Green A = Light Green
@@ -68,6 +66,7 @@ public:
 	bool horizontal_orientation;
 	int direction; //o вверх 1 вниз 2 влево 3 вправо
 	int health_bar;
+
 	void set(int a1, int b1, int a2, int b2, int l) {
 		x1 = a1;
 		y1 = b1;
@@ -85,6 +84,7 @@ public:
 		length = l;
 		health_bar = l;
 	};
+
 	bool is_it(int x, int y) {
 		if (((x >= x1 && x <= x2) || (x >= x2 && x <= x1)) && ((y >= y1 && y <= y2) || (y >= y2 && y <= y1))) {
 			return true;
@@ -387,7 +387,7 @@ public:
 		}
 	}
 
-	void hit(int x, int y, int x1, int y1, int u) {  //47 или 12 для u
+	void hit(int x, int y, int x1, int u) {  //47 или 12 для u
 		setCursorPosition(0, 18);
 		cout << "                                                ";
 		SetColor(LightRed, Cyan);
@@ -396,13 +396,13 @@ public:
 		cout << "x ";
 		SetColor(White, Cyan);
 
-		setCursorPosition(x1, y1);
-		cout << "Есть пробитие!";
+		setCursorPosition(19 + x1, 15);
+		cout << "Ранен!";
 		Sleep(1500);
-		setCursorPosition(x1 - 2, y1);
-		cout << "                            ";
+		setCursorPosition(19 + x1 - 2, 15);
+		cout << "                 ";
 	}
-	void miss(int x, int y, int x1, int y1, int u) {
+	void miss(int x, int y, int x1, int u) {
 		setCursorPosition(0, 18);
 		cout << "                                                ";
 		setCursorPosition(u + 1 + x * 2, 4 + y);
@@ -412,13 +412,13 @@ public:
 		cout << "о";
 		SetColor(White, Cyan);
 
-		setCursorPosition(x1, y1);
-		cout << "Промах!";
+		setCursorPosition(19+x1,15);
+		cout << "Мимо!";
 		Sleep(1500);
-		setCursorPosition(x1 - 2, y1);
+		setCursorPosition(19+x1 - 2, 15);
 		cout << "                            ";
 	}
-	void kill(int x, int y, int x1, int y1, int u) {
+	void kill(int x, int y, int x1, int u) {
 		setCursorPosition(0, 18);
 		cout << "                                                ";
 		SetColor(LightRed, Cyan);
@@ -427,10 +427,10 @@ public:
 		cout << "x ";
 		SetColor(White, Cyan);
 
-		setCursorPosition(x1, y1);
-		cout << "Корабль затоплен!";
+		setCursorPosition(19+x1, 15);
+		cout << "Убит!";
 		Sleep(3000);
-		setCursorPosition(x1 - 2, y1);
+		setCursorPosition(19 + x1 - 2, 15);
 		cout << "                            ";
 	}
 };
@@ -688,12 +688,12 @@ public:
 				if (ships[i].is_it(number_letter, number - 1) == true) {
 					ships[i].health_bar -= 1;
 					if (ships[i].is_dead() == true) {
-						decor.kill(number_letter, number - 1, 48, 15, 48);
+						decor.kill(number_letter, number - 1, 37, 48);
 						ships[i].death(zones, 49);
 
 					}
 					else {
-						decor.hit(number_letter, number - 1, 50, 15, 48);
+						decor.hit(number_letter, number - 1, 36 , 48);
 					}
 					break;
 				}
@@ -707,7 +707,7 @@ public:
 			*sequence = 1;
 		}
 		else {
-			decor.miss(number_letter, number - 1, 54, 15, 48);
+			decor.miss(number_letter, number - 1, 37, 48);
 			*sequence = 0;
 			*is_prev_success = false;
 		}
@@ -734,7 +734,7 @@ public:
 		}
 		if (*is_prev_success_comp == false) {
 			int cheat = 0;
-			cheat = rand() % 5;
+			cheat = rand() % 7;
 			while (true) {
 				*x = rand() % 10;
 				*y = rand() % 10;
@@ -742,7 +742,7 @@ public:
 				if (cheat == 2 && zones[*y][*x] == 0) {
 					continue;
 				}
-				if (zones[*y][*x] == -2 || zones[*y][*x] == -1 || zones[*y][*x] == 0
+				if (zones[*y][*x] == -2 || zones[*y][*x] == -1 // || zones[*y][*x] == 0
 					) {
 					continue;
 				}
@@ -754,7 +754,7 @@ public:
 							if (ships[i].is_it(*x, *y) == true) {
 								ships[i].health_bar -= 1;
 								if (ships[i].is_dead() == true) {
-									decor.kill(*x, *y, 12, 15, 12);
+									decor.kill(*x, *y, 0, 12);
 									ships[i].death(zones, 13);
 									*is_prev_success_comp = false;
 									*is_prev_success_comp_2 = true;
@@ -763,8 +763,7 @@ public:
 									*x_supreme = *x;
 									*y_supreme = *y;
 									*count_of_hits += 1;
-									decor.hit(*x, *y, 14, 15, 12);
-									
+									decor.hit(*x, *y, -1, 12);
 									current_ship = &ships[i];
 									setCursorPosition(0, 29);
 									*is_prev_success_comp = true;
@@ -778,7 +777,7 @@ public:
 
 					else {
 						zones[*y][*x] = -1;
-						decor.miss(*x, *y, 17, 15, 12);
+						decor.miss(*x, *y, 0, 12);
 						*sequence = 1;
 						*is_prev_success_comp = false;
 						*is_prev_success_comp_2 = false;
@@ -848,7 +847,7 @@ public:
 				}
 				current_ship->health_bar -= 1;
 				if (current_ship->is_dead() == true) {
-					decor.kill(*x, *y, 12, 15, 12);
+					decor.kill(*x, *y, 0, 12);
 					current_ship->death(zones, 13);
 					*is_prev_success_comp = false;
 					*is_prev_success_comp_2 = true;
@@ -861,7 +860,7 @@ public:
 					*y_supreme = 0;
 				}
 				else {
-					decor.hit(*x, *y, 14, 15, 12);
+					decor.hit(*x, *y, -1, 12);
 					*is_prev_success_comp = true;
 					*is_prev_success_comp_2 = true;
 				}
@@ -880,7 +879,7 @@ public:
 				*y = *y_supreme;
 				zones[*y1][*x1] = -1;
 
-				decor.miss(*x1, *y1, 17, 15, 12);
+				decor.miss(*x1, *y1, 0, 12);
 				*is_prev_success_comp = true;
 				*is_prev_success_comp_2 = false;
 				*sequence = 1;
@@ -898,7 +897,6 @@ public:
 		return current_ship;
 	}
 };
-
 
 int main()
 {
