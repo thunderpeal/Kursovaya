@@ -3,6 +3,7 @@
 #include <ctime>
 #include <conio.h>
 #include <Windows.h>
+#include <windowsx.h>
 using namespace std;
 
 #define UP_ARROW 72
@@ -39,12 +40,6 @@ enum ConsoleColor
 6 = Yellow E = Light Yellow
 7 = White F = Bright White*/
 
-void SetColor(int text, int background)
-	{
-		HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-		SetConsoleTextAttribute(hStdOut, (WORD)((background << 4) | text));
-	}
-
 void SetColor(int text, ConsoleColor background)
 	{
 		HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -64,7 +59,7 @@ public:
 	int x1, y1, x2, y2;
 	int length;
 	bool horizontal_orientation;
-	int direction; //o вверх 1 вниз 2 влево 3 вправо
+	int direction; //0 вверх 1 вниз 2 влево 3 вправо
 	int health_bar;
 
 	void set(int a1, int b1, int a2, int b2, int l) {
@@ -327,6 +322,43 @@ public:
 			*c_b_p = false;
 		}
 	}
+
+	int block(int x, int y, int x1, int y1) {
+		int answer;
+		while (true) {
+			do {
+				cin.clear();
+				int L = cin.rdbuf()->in_avail();
+				cin.ignore(L);
+				cin >> answer;
+				setCursorPosition(x, y);
+				cout << "                                           ";
+				if (!cin) {
+					setCursorPosition(x, y);
+					SetColor(LightRed, Cyan);
+					cout << "Введите число !" << endl;
+					setCursorPosition(x1, y1);
+					SetColor(White, Cyan);
+					cout << "                                                                                          ";
+					setCursorPosition(x1, y1);
+				}
+			} while (!cin);
+			if (answer == 1 || answer == 0) {
+				break;
+			}
+			else {
+				setCursorPosition(x, y);
+				SetColor(LightRed, Cyan);
+				cout << "Неверный формат ввода! Введите 1 или 0.";
+				SetColor(White, Cyan);
+				setCursorPosition(x1, y1);
+				cout << "                                         ";
+				setCursorPosition(x1, y1);
+			}
+		}
+		system("cls");
+		return answer;
+	}
 };
 
 class Decor :public Game {
@@ -402,6 +434,7 @@ public:
 		setCursorPosition(19 + x1 - 2, 15);
 		cout << "                 ";
 	}
+
 	void miss(int x, int y, int x1, int u) {
 		setCursorPosition(0, 18);
 		cout << "                                                ";
@@ -418,6 +451,7 @@ public:
 		setCursorPosition(19+x1 - 2, 15);
 		cout << "                            ";
 	}
+
 	void kill(int x, int y, int x1, int u) {
 		setCursorPosition(0, 18);
 		cout << "                                                ";
@@ -613,20 +647,17 @@ public:
 	}
 
 	void arrangement(int (&zones)[10][10], const char alphabet[10],  Ships *player1_ships) {
-		int answer = 0;
-		int answer_1 = 0;
 		while (true) {
-			setCursorPosition(0, 7);
-			cout << "                Желаете расставить корабли самостоятельно" << endl<<
+			setCursorPosition(16, 7);
+			cout << "Желаете расставить корабли самостоятельно" << endl<<
 				endl << "             или использовать автоматическую расстановку?(1/0) ";
-			cin >> answer;
-			system("cls");
-			if (answer == 1) {
+			
+			if (block(35, 11, 63, 9) == 1) {
+				system("cls");
 				player_arrangement_type(zones, alphabet, player1_ships);
 				setCursorPosition(13, 22);
 				cout << "Подтвердить установку или повторить с нуля?(1/0) ";
-				cin >> answer_1;
-				if (answer_1 == 0) {
+				if (block(49,24, 48,22) == 0) {
 					set_0(zones);
 					system("cls");
 					continue;
@@ -644,15 +675,13 @@ public:
 
 				setCursorPosition(13, 16);
 				cout << "Подтвердить установку или повторить с нуля?(1/0) ";
-				cin >> answer_1;
-				setCursorPosition(0, 18);
-
-				if (answer_1 == 0) {
+				if (block(35,18,62,16) == 0) {
 					set_0(zones);
 					system("cls");
 					continue;
 				}
 				else {
+					setCursorPosition(0, 18);
 					cout << "                          Расстановка окончена!";
 					cout<<endl<<"          Компьютер также расставил свои корабли. Приступим к игре. ";
 					Sleep(3500);
@@ -734,7 +763,7 @@ public:
 		}
 		if (*is_prev_success_comp == false) {
 			int cheat = 0;
-			cheat = rand() % 10;
+			cheat = rand() % 11;
 			while (true) {
 				*x = rand() % 10;
 				*y = rand() % 10;
@@ -905,8 +934,9 @@ int main()
 	setlocale(LC_ALL, "Russian");
 	Decor decor;
 	decor.SeaBattle();
-	system("cls");
+	system("cls"); 
 
+	
 	Game game;
 	Computer player0;
 	Player player1;
