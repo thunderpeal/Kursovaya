@@ -323,7 +323,7 @@ public:
 		}
 	}
 
-	int block(int x, int y, int x1, int y1) {
+	int answer(int x, int y, int x1, int y1) {
 		int answer;
 		while (true) {
 			do {
@@ -356,7 +356,6 @@ public:
 				setCursorPosition(x1, y1);
 			}
 		}
-		system("cls");
 		return answer;
 	}
 };
@@ -652,19 +651,20 @@ public:
 			cout << "Желаете расставить корабли самостоятельно" << endl<<
 				endl << "             или использовать автоматическую расстановку?(1/0) ";
 			
-			if (block(35, 11, 63, 9) == 1) {
+			if (answer(35, 11, 63, 9) == 1) {
 				system("cls");
 				player_arrangement_type(zones, alphabet, player1_ships);
 				setCursorPosition(13, 22);
 				cout << "Подтвердить установку или повторить с нуля?(1/0) ";
-				if (block(49,24, 48,22) == 0) {
-					set_0(zones);
+				if (answer(49,24, 48,22) == 0) {
 					system("cls");
+					set_0(zones);
 					continue;
 				}
 				else { break; }
 			}
 			else {
+				system("cls");
 				auto_arrangement(zones, alphabet, player1_ships);
 				cout << endl <<endl;
 				for (int i = 0; i < 12; i++) {
@@ -675,9 +675,9 @@ public:
 
 				setCursorPosition(13, 16);
 				cout << "Подтвердить установку или повторить с нуля?(1/0) ";
-				if (block(35,18,62,16) == 0) {
-					set_0(zones);
+				if (answer(35,18,62,16) == 0) {
 					system("cls");
+					set_0(zones);
 					continue;
 				}
 				else {
