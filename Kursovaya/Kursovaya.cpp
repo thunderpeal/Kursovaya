@@ -362,6 +362,14 @@ public:
 
 class Decor :public Game {
 public:
+	void x(int x,int y) {
+		setCursorPosition(x, y);
+		SetColor(LightRed, Red);
+		cout << "||";
+	}
+	void x1() {
+		SetColor(LightRed, Red); cout << "|";
+	}
 	void a() {
 		SetColor(LightRed, Red);
 		cout << "||";
@@ -378,11 +386,14 @@ public:
 		a(); b(); b();
 	}
 	void SeaBattle() {
-		cout << endl << endl << endl;  b(); cout << "          ";
-		b(); cout << "                                                  "; a(); cout << endl;; b(); cout << "          ";
-		c(); b(); c(); b(); a(); c(); b(); a();  SetColor(LightRed, Red); cout << "|";
-		c(); b(); b(); a(); c(); b(); c(); c(); b(); a(); c(); b(); c(); a(); cout << endl; b(); cout << "          ";
-		a1(); b(); a1(); b(); b(); c(); c(); c();    c(); c(); c(); a(); b(); c(); b(); c(); c(); c(); a(); cout << endl;
+		
+		x(62, 3);cout << endl;
+		x(11, 4); x(16, 4); x(21, 4); x(23, 4); x(28, 4); x1(); x(31, 4); x(37, 4); x(39, 4); x(44, 4); x(48, 4);
+		x(53, 4); x(55, 4); x(60, 4); x(64, 4); cout << endl;
+		x(11, 5); x1(); x(15, 5); x1(); x(20, 5); x(24, 5); x(28, 5); x(32, 5);  x(36, 5);  x(40, 5); x(44, 5);
+		x(47, 5); x(52, 5); x(56, 5); x(60, 5); x(64, 5); cout << endl;
+
+
 		b(); cout << "          ";
 		a(); b(); SetColor(LightRed, Red); cout << "|"; b(); c(); c(); c(); a(); a(); c(); c(); b(); b(); b(); b(); a(); c();
 		b(); b(); c(); c(); a(); b(); a1(); cout << endl;; b(); cout << "          ";
@@ -398,14 +409,13 @@ public:
 		a1(); c(); b(); c(); c(); a(); b(); a1(); cout << endl; b(); cout << "                           ";
 		c(); c(); c(); c(); a1(); b(); a(); cout << endl; b(); cout << "                           ";
 		a1(); c(); b(); b(); a(); c(); b(); c(); a(); b(); cout << endl << endl << endl; cout << "                   ";
-		system("pause");
 	}
 
 	void game_beginning_text() {
 		setCursorPosition(0, 16);
 		cout << "     Вы находитесь в режиме боя. Право первого хода определяется жребием." << endl;
 		cout << "     Ваши корабли располагаются на поле слева. Удачи!";
-		Sleep(5000);
+		Sleep(7000);
 		for (int i = 0; i < 5; i++) {
 			Sleep(250);
 			setCursorPosition(0, 16);
@@ -465,6 +475,28 @@ public:
 		Sleep(3000);
 		setCursorPosition(19 + x1 - 2, 15);
 		cout << "                            ";
+	}
+
+	void instructions() {
+		cout << "Нажмите клавишу F1, чтобы открыть инструкцию;" << endl;
+		cout << "Нажмите клавишу F2, чтобы открыть информацию об авторе;" << endl;
+		cout << "или нажмите любую другую клавишу, чтобы начать игру . . .";
+		int c;
+		c = _getch();
+		if (c == 0) {
+			c = _getch();
+			if (c == 59) {
+				system("1.txt");
+			}
+			else if (c == 60) {
+				system("1.txt");
+			}
+		}
+	}
+
+	Decor() {
+		SeaBattle();
+		instructions();
 	}
 };
 
@@ -929,15 +961,14 @@ public:
 
 int main()
 {
-	system("mode con cols=77 lines=24");
+	system("mode con cols=77 lines=25");
 	system("title Морской бой");
 	srand(time(NULL));
 	setlocale(LC_ALL, "Russian");
-	Decor decor;
-	decor.SeaBattle();
-	system("cls"); 
 
-	
+	Decor decor;
+	system("cls");
+
 	Game game;
 	Computer player0;
 	Player player1;
