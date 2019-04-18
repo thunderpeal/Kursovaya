@@ -378,26 +378,26 @@ public:
 		a(); b(); b();
 	}
 	void SeaBattle() {
-		cout << endl << endl << endl;  b(); cout << "        ";
-		b(); cout << "                                                  "; a(); cout << endl;; b(); cout << "        ";
+		cout << endl << endl << endl;  b(); cout << "          ";
+		b(); cout << "                                                  "; a(); cout << endl;; b(); cout << "          ";
 		c(); b(); c(); b(); a(); c(); b(); a();  SetColor(LightRed, Red); cout << "|";
-		c(); b(); b(); a(); c(); b(); c(); c(); b(); a(); c(); b(); c(); a(); cout << endl; b(); cout << "        ";
+		c(); b(); b(); a(); c(); b(); c(); c(); b(); a(); c(); b(); c(); a(); cout << endl; b(); cout << "          ";
 		a1(); b(); a1(); b(); b(); c(); c(); c();    c(); c(); c(); a(); b(); c(); b(); c(); c(); c(); a(); cout << endl;
-		b(); cout << "        ";
+		b(); cout << "          ";
 		a(); b(); SetColor(LightRed, Red); cout << "|"; b(); c(); c(); c(); a(); a(); c(); c(); b(); b(); b(); b(); a(); c();
-		b(); b(); c(); c(); a(); b(); a1(); cout << endl;; b(); cout << "        ";
+		b(); b(); c(); c(); a(); b(); a1(); cout << endl;; b(); cout << "          ";
 		c(); b(); c(); c(); c(); c();  b(); b(); b(); b(); c(); c(); a(); b(); c(); b(); c(); c(); a1(); b(); a();
-		cout << endl; b(); cout << "        ";
+		cout << endl; b(); cout << "          ";
 		c(); b(); c(); b(); a(); c(); b(); c(); b(); b(); b(); b(); b(); a(); c(); b(); c(); c(); b(); a(); c();
 		b(); c(); a(); b();
-		cout << endl << endl; b(); cout << "                         ";
+		cout << endl << endl; b(); cout << "                           ";
 
-		b(); cout << "                 "; a(); cout << endl; b(); cout << "                         ";
-		a1(); c(); b(); b(); a(); c(); b(); c(); a(); cout << endl; b(); cout << "                         ";
-		c(); b(); b(); b(); b(); c(); c(); c(); a(); cout << endl; b(); cout << "                         ";
-		a1(); c(); b(); c(); c(); a(); b(); a1(); cout << endl; b(); cout << "                         ";
-		c(); c(); c(); c(); a1(); b(); a(); cout << endl; b(); cout << "                         ";
-		a1(); c(); b(); b(); a(); c(); b(); c(); a(); b(); cout << endl << endl << endl; cout << "                 ";
+		b(); cout << "                 "; a(); cout << endl; b(); cout << "                           ";
+		a1(); c(); b(); b(); a(); c(); b(); c(); a(); cout << endl; b(); cout << "                           ";
+		c(); b(); b(); b(); b(); c(); c(); c(); a(); cout << endl; b(); cout << "                           ";
+		a1(); c(); b(); c(); c(); a(); b(); a1(); cout << endl; b(); cout << "                           ";
+		c(); c(); c(); c(); a1(); b(); a(); cout << endl; b(); cout << "                           ";
+		a1(); c(); b(); b(); a(); c(); b(); c(); a(); b(); cout << endl << endl << endl; cout << "                   ";
 		system("pause");
 	}
 
@@ -929,6 +929,7 @@ public:
 
 int main()
 {
+	system("mode con cols=77 lines=24");
 	system("title Морской бой");
 	srand(time(NULL));
 	setlocale(LC_ALL, "Russian");
