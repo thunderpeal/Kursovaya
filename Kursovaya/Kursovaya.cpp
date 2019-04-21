@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
-
-#include "Sea_Battle.cpp"
+#include "Sea_Battle.h"
 
 int main()
 {
