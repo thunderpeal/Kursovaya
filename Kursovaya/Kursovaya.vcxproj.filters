@@ -32,6 +32,9 @@
     <ClCompile Include="Kursovaya.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Sea_Battle.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\Downloads\Icon_2.ico.ico">
