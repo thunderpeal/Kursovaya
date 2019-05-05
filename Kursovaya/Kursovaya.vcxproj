@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="resource1.h" />
     <ClInclude Include="Sea_Battle.h" />
   </ItemGroup>
   <ItemGroup>
@@ -166,10 +167,10 @@
     <ClCompile Include="Sea_Battle.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\Downloads\Icon_2.ico.ico" />
+    <ResourceCompile Include="Kursovaya.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Kursovaya.rc" />
+    <Image Include="C:\Users\slav\Desktop\Ship.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
