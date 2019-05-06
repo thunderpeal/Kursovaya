@@ -697,6 +697,21 @@ int number = 0;
 	}
 }
 
+Player::Player() {
+	set_0(zones);
+	arrangement(zones, alphabet, ships);
+}
+
+Decor::Decor() {
+	SeaBattle();
+	instructions();
+}
+
+Computer::Computer() {
+	set_0(zones);
+	auto_arrangement(zones, alphabet, ships);
+}
+
 Ships* Computer::move(bool* is_prev_success_comp, bool* is_prev_success_comp_2, int * sequence, int *enter, bool* help,
 	int*x, int * y, int *x1, int* y1, int(&zones)[10][10], bool(*directions_con), int *count_of_hits, int* x_supreme,
 	int *y_supreme, Ships *current_ship, Ships * ships, Decor decor) {

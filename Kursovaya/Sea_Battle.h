@@ -89,19 +89,13 @@ public:
 
 	void instructions();
 
-	Decor() {
-		SeaBattle();
-		instructions();
-	}
+	Decor();
 };
 
 class Player : public Game {
 public:
 	Ships ships[10];
-	Player() {
-		set_0(zones);
-		arrangement(zones, alphabet, ships);
-	}
+	Player();
 
 	void player_arrangement_type(int(&array)[10][10], const char alphabet[10], Ships *a);
 
@@ -113,10 +107,7 @@ public:
 class Computer : public Game {
 public:
 	Ships ships[10];
-	Computer() {
-		set_0(zones);
-		auto_arrangement(zones, alphabet, ships);
-	}
+	Computer();
 
 	Ships* move(bool* is_prev_success_comp, bool* is_prev_success_comp_2, int * sequence, int *enter, bool* help,
 		int*x, int * y, int *x1, int* y1, int(&zones)[10][10], bool(*directions_con), int *count_of_hits, int* x_supreme,
