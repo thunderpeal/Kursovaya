@@ -425,7 +425,7 @@ void Decor::instructions() {
 			system("Инструкция.txt");
 		}
 		else if (c == 60) {
-			system("1.txt");
+			system("Автор.txt");
 		}
 	}
 }
